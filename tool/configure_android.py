@@ -9,9 +9,10 @@ APP = ANDROID / "app"
 manifest = APP / "src" / "main" / "AndroidManifest.xml"
 if manifest.exists():
     text = manifest.read_text(encoding="utf-8")
-    text = text.replace('android:label="droneatlas"', 'android:label="DroneAtlas"')
-    text = text.replace('android:label="Droneatlas"', 'android:label="DroneAtlas"')
-    text = text.replace('android:label="DroneAtlas"', 'android:label="DroneAtlas"')
+    text = text.replace('android:label="droneatlas"', 'android:label="Drone Atlas Academy"')
+    text = text.replace('android:label="Droneatlas"', 'android:label="Drone Atlas Academy"')
+    text = text.replace('android:label="DroneAtlas"', 'android:label="Drone Atlas Academy"')
+    text = text.replace('android:label="Drone Atlas Academy"', 'android:label="Drone Atlas Academy"')
     permissions = [
         'android.permission.INTERNET',
         'android.permission.POST_NOTIFICATIONS',
@@ -130,7 +131,7 @@ if settings.exists():
     text = settings.read_text(encoding="utf-8")
     text = re.sub(
         r'id\("com\.android\.application"\) version "[^"]+"',
-        'id("com.android.application") version "8.11.1"',
+        'id("com.android.application") version "8.12.1"',
         text,
     )
     text = re.sub(
@@ -189,4 +190,4 @@ class MainActivity : FlutterActivity() {
     encoding="utf-8",
 )
 
-print("Configuration Android DroneAtlas (notifications, localisation, signature Play Store et mises à jour) appliquée.")
+print("Configuration Android Drone Atlas Academy (notifications, localisation, signature Play Store et mises à jour) appliquée.")
