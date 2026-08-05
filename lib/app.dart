@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import 'controllers/app_controller.dart';
 import 'core/theme.dart';
@@ -16,10 +15,7 @@ class DroneAtlasApp extends StatefulWidget {
 
 class _DroneAtlasAppState extends State<DroneAtlasApp> {
   final AppController _controller = AppController();
-  static const String _themePreferenceKey = 'appearance.darkMode';
-
-  final SharedPreferencesAsync _prefs = SharedPreferencesAsync();
-  ThemeMode _themeMode = ThemeMode.light;
+  ThemeMode _themeMode = ThemeMode.dark;
 
   @override
   void initState() {
@@ -34,22 +30,14 @@ class _DroneAtlasAppState extends State<DroneAtlasApp> {
     super.dispose();
   }
 
-  Future<void> _loadSavedTheme() async {
-    final darkMode = await _prefs.getBool(_themePreferenceKey) ?? false;
-    if (!mounted) return;
-    setState(() {
-      _themeMode = darkMode ? ThemeMode.dark : ThemeMode.light;
-    });
-  }
 
-  void _toggleTheme() {
-    final next = _themeMode == ThemeMode.dark
+void _toggleTheme() {
+  setState(() {
+    _themeMode = _themeMode == ThemeMode.dark
         ? ThemeMode.light
         : ThemeMode.dark;
-    setState(() => _themeMode = next);
-    _prefs.setBool(_themePreferenceKey, next == ThemeMode.dark);
-  }
-
+  });
+}
   @override
   Widget build(BuildContext context) {
     return AppScope(
