@@ -49,7 +49,7 @@ void droneAtlasCallbackDispatcher() {
           ? null
           : DateTime.tryParse(rawLastReminder)?.toLocal();
       final minimumGap = switch (frequency) {
-        'daily' => const Duration(hours: 22),
+        'daily' => const Duration(hours: 6),
         'three_per_week' => const Duration(hours: 54),
         _ => const Duration(days: 6),
       };
