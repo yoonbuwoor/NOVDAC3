@@ -226,6 +226,7 @@ class _QuizHubScreenState extends State<QuizHubScreen> {
       context,
       MaterialPageRoute(
         builder: (_) => QuizScreen(
+          quizId: pack.id,
           title: pack.title,
           subtitle:
               '${pack.questions.length} questions • ${pack.minutes} min • ${pack.xp} XP',

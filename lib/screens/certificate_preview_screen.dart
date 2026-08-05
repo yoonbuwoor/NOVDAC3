@@ -55,7 +55,7 @@ class _CertificatePreviewScreenState extends State<CertificatePreviewScreen> {
 
   Future<void> _openWhatsApp() async {
     final message = Uri.encodeComponent(
-      'Bonjour Novateur221, j’ai validé la certification « ${widget.pathTitle} » dans DroneAtlas Academy. '
+      'Bonjour Novateur221, j’ai validé la certification « ${widget.pathTitle} » dans Drone Atlas Academy. '
       'Mon identifiant est ${widget.certificateId}. Je souhaite recevoir la version officielle sans filigrane.',
     );
     final uri = Uri.parse(

@@ -1,4 +1,4 @@
-name: Build DroneAtlas Nova Android
+name: Build Drone Atlas Academy Android
 
 on:
   workflow_dispatch:
@@ -112,9 +112,11 @@ jobs:
         shell: bash
         env:
           DROBOT_API_URL_RAW: ${{ secrets.DROBOT_API_URL }}
+          PROGRESS_SYNC_URL_RAW: ${{ secrets.PROGRESS_SYNC_URL }}
         run: |
           set -euo pipefail
           DROBOT_API_URL="$(printf '%s' "$DROBOT_API_URL_RAW" | tr -d '\r\n' | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
+          PROGRESS_SYNC_URL="$(printf '%s' "$PROGRESS_SYNC_URL_RAW" | tr -d '\r\n' | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
 
           dart_defines=(
             "--dart-define=EMAILJS_SERVICE_ID=service_726u54k"
@@ -125,6 +127,10 @@ jobs:
           if [[ -n "$DROBOT_API_URL" ]]; then
             echo "::add-mask::$DROBOT_API_URL"
             dart_defines+=("--dart-define=DROBOT_API_URL=$DROBOT_API_URL")
+          fi
+
+          if [[ -n "$PROGRESS_SYNC_URL" ]]; then
+            dart_defines+=("--dart-define=PROGRESS_SYNC_URL=$PROGRESS_SYNC_URL")
           fi
 
           # Les certifications sont volontairement désactivées dans cette version.
@@ -134,9 +140,11 @@ jobs:
         shell: bash
         env:
           DROBOT_API_URL_RAW: ${{ secrets.DROBOT_API_URL }}
+          PROGRESS_SYNC_URL_RAW: ${{ secrets.PROGRESS_SYNC_URL }}
         run: |
           set -euo pipefail
           DROBOT_API_URL="$(printf '%s' "$DROBOT_API_URL_RAW" | tr -d '\r\n' | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
+          PROGRESS_SYNC_URL="$(printf '%s' "$PROGRESS_SYNC_URL_RAW" | tr -d '\r\n' | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
 
           dart_defines=(
             "--dart-define=EMAILJS_SERVICE_ID=service_726u54k"
@@ -149,13 +157,17 @@ jobs:
             dart_defines+=("--dart-define=DROBOT_API_URL=$DROBOT_API_URL")
           fi
 
+          if [[ -n "$PROGRESS_SYNC_URL" ]]; then
+            dart_defines+=("--dart-define=PROGRESS_SYNC_URL=$PROGRESS_SYNC_URL")
+          fi
+
           # Les certifications sont volontairement désactivées dans cette version.
           flutter build appbundle --release "${dart_defines[@]}"
 
       - name: Publier les fichiers Android
         uses: actions/upload-artifact@v4
         with:
-          name: DroneAtlas-3.4.1-PlayStore
+          name: Drone-Atlas-Academy-3.5.0-PlayStore
           retention-days: 30
           if-no-files-found: error
           path: |

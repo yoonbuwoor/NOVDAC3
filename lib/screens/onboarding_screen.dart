@@ -100,7 +100,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      'BIENVENUE SUR DRONEATLAS',
+                                      'BIENVENUE SUR DRONE ATLAS ACADEMY',
                                       style: TextStyle(
                                         color: cyan,
                                         fontSize: 12,
@@ -221,7 +221,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                               SizedBox(width: 8),
                               Expanded(
                                 child: Text(
-                                  'Aucun compte ni espace communautaire n’est créé. Tes informations de profil restent aussi enregistrées sur cet appareil.',
+                                  'Aucun numéro de téléphone n’est demandé. Ton profil et ta progression sont d’abord enregistrés sur cet appareil, puis la progression est synchronisée automatiquement lorsque Internet est disponible.',
                                   style: TextStyle(
                                     color: Colors.white54,
                                     fontSize: 11,

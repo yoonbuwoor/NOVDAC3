@@ -327,7 +327,7 @@ class _CompactAcademyPill extends StatelessWidget {
             Icon(Icons.route_rounded, size: 18, color: orange),
             SizedBox(width: 6),
             Text(
-              'PARCOURS DRONEATLAS',
+              'PARCOURS DRONE ATLAS ACADEMY',
               style: TextStyle(
                 fontSize: 13,
                 height: 1.2,

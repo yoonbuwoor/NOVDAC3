@@ -4,6 +4,7 @@ import '../controllers/app_controller.dart';
 import '../core/theme.dart';
 import '../models/academy_models.dart';
 import '../widgets/common.dart';
+import '../widgets/community_card.dart';
 import 'report_screen.dart';
 
 class MissionPlayerScreen extends StatefulWidget {
@@ -34,10 +35,16 @@ class _MissionPlayerScreenState extends State<MissionPlayerScreen> {
     });
   }
 
-  void _next() {
+  Future<void> _next() async {
     if (_step == widget.mission.steps.length - 1) {
-      AppScope.of(context).completeMission(widget.mission.id, _score);
+      final controller = AppScope.of(context);
+      final firstCompletion = !controller.missionCompleted(widget.mission.id);
+      controller.completeMission(widget.mission.id, _score);
       setState(() => _step++);
+      if (firstCompletion && controller.canOfferCommunityInvitation) {
+        await showDroneAtlasCommunityInvitation(context);
+        await controller.markCommunityInvitationHandled();
+      }
       return;
     }
     setState(() {

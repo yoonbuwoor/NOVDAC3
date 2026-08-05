@@ -4,6 +4,7 @@ import '../controllers/app_controller.dart';
 import '../core/theme.dart';
 import '../models/academy_models.dart';
 import '../widgets/common.dart';
+import '../widgets/community_card.dart';
 import '../widgets/learning_visuals.dart';
 
 class CourseDetailScreen extends StatefulWidget {
@@ -62,7 +63,16 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
     if (_selectedAnswer == null) return;
     setState(() => _showResult = true);
     if (_selectedAnswer == _lesson.correctAnswer) {
-      AppScope.of(context).completeLesson(_lesson.id);
+      final controller = AppScope.of(context);
+      final firstCompletion = !controller.lessonCompleted(_lesson.id);
+      controller.completeLesson(_lesson.id);
+      if (firstCompletion && controller.canOfferCommunityInvitation) {
+        WidgetsBinding.instance.addPostFrameCallback((_) async {
+          if (!mounted) return;
+          await showDroneAtlasCommunityInvitation(context);
+          await controller.markCommunityInvitationHandled();
+        });
+      }
     }
   }
 

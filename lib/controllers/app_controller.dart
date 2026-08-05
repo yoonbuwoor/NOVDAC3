@@ -1,6 +1,8 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -8,7 +10,16 @@ import '../models/remote_content_models.dart';
 import '../services/background_update_service.dart';
 import '../services/content_update_service.dart';
 import '../services/notification_service.dart';
+import '../services/progress_sync_service.dart';
 import '../services/registration_service.dart';
+
+enum ProgressSyncState {
+  idle,
+  waitingForConnection,
+  syncing,
+  synced,
+  error,
+}
 
 class AppController extends ChangeNotifier {
   AppController();
@@ -20,13 +31,27 @@ class AppController extends ChangeNotifier {
   static const String _learnerEmailKey = 'profile.email';
   static const String _onboardingCompleteKey = 'profile.onboardingComplete';
   static const String _registrationSyncedKey = 'profile.registrationSynced';
+  static const String _completedLessonsKey = 'progress.completedLessons';
+  static const String _completedMissionsKey = 'progress.completedMissions';
+  static const String _missionScoresKey = 'progress.missionScores';
+  static const String _quizScoresKey = 'progress.quizScores';
+  static const String _xpKey = 'progress.xp';
+  static const String _progressPendingKey = 'progress.pendingSync';
+  static const String _lastProgressSyncKey = 'progress.lastSyncedAt';
+  static const String _communityInvitationHandledKey =
+      'community.invitationHandled';
 
   final Set<String> _completedLessons = <String>{};
   final Set<String> _completedMissions = <String>{};
   final Map<String, int> _missionScores = <String, int>{};
+  final Map<String, int> _quizScores = <String, int>{};
   final ContentUpdateService _contentService = ContentUpdateService();
   final RegistrationService _registrationService = RegistrationService();
+  final ProgressSyncService _progressSyncService = ProgressSyncService();
   final SharedPreferencesAsync _prefs = SharedPreferencesAsync();
+  StreamSubscription<List<ConnectivityResult>>? _connectivitySubscription;
+  bool _networkAvailable = false;
+  bool _progressSyncInFlight = false;
 
   String learnerName = 'Explorateur';
   String learnerProfession = '';
@@ -59,9 +84,39 @@ class AppController extends ChangeNotifier {
   bool registrationSubmitting = false;
   String? registrationError;
 
+  ProgressSyncState progressSyncState = ProgressSyncState.idle;
+  bool progressSyncPending = false;
+  DateTime? lastProgressSyncedAt;
+  String? progressSyncError;
+  bool communityInvitationHandled = false;
+
   Set<String> get completedLessons => Set.unmodifiable(_completedLessons);
   Set<String> get completedMissions => Set.unmodifiable(_completedMissions);
   Map<String, int> get missionScores => Map.unmodifiable(_missionScores);
+  Map<String, int> get quizScores => Map.unmodifiable(_quizScores);
+  String get progressSyncLabel {
+    switch (progressSyncState) {
+      case ProgressSyncState.waitingForConnection:
+        return 'Progression enregistrée — en attente d’Internet';
+      case ProgressSyncState.syncing:
+        return 'Synchronisation de la progression…';
+      case ProgressSyncState.synced:
+        return 'Progression synchronisée';
+      case ProgressSyncState.error:
+        return 'Progression locale — nouvel essai automatique';
+      case ProgressSyncState.idle:
+        return progressSyncPending
+            ? 'Progression enregistrée localement'
+            : 'Progression protégée sur cet appareil';
+    }
+  }
+
+  bool get canOfferCommunityInvitation =>
+      !communityInvitationHandled &&
+      (_completedLessons.isNotEmpty ||
+          _completedMissions.isNotEmpty ||
+          _quizScores.isNotEmpty);
+
   bool get updateAvailable =>
       availableManifest != null &&
       availableManifest!.contentVersion > installedContentVersion;
@@ -80,6 +135,43 @@ class AppController extends ChangeNotifier {
           await _prefs.getBool(_onboardingCompleteKey) ?? false;
       registrationSynced =
           await _prefs.getBool(_registrationSyncedKey) ?? false;
+
+      _completedLessons.addAll(
+        await _prefs.getStringList(_completedLessonsKey) ?? const <String>[],
+      );
+      _completedMissions.addAll(
+        await _prefs.getStringList(_completedMissionsKey) ?? const <String>[],
+      );
+      final storedScores = await _prefs.getString(_missionScoresKey);
+      if (storedScores != null && storedScores.isNotEmpty) {
+        final decoded = jsonDecode(storedScores);
+        if (decoded is Map<String, dynamic>) {
+          for (final entry in decoded.entries) {
+            final value = entry.value;
+            if (value is num) _missionScores[entry.key] = value.toInt();
+          }
+        }
+      }
+      final storedQuizScores = await _prefs.getString(_quizScoresKey);
+      if (storedQuizScores != null && storedQuizScores.isNotEmpty) {
+        final decoded = jsonDecode(storedQuizScores);
+        if (decoded is Map<String, dynamic>) {
+          for (final entry in decoded.entries) {
+            final value = entry.value;
+            if (value is num) _quizScores[entry.key] = value.toInt();
+          }
+        }
+      }
+      xp = await _prefs.getInt(_xpKey) ?? 120;
+      progressSyncPending =
+          await _prefs.getBool(_progressPendingKey) ?? false;
+      final lastSyncRaw = await _prefs.getString(_lastProgressSyncKey);
+      lastProgressSyncedAt = DateTime.tryParse(lastSyncRaw ?? '');
+      progressSyncState = progressSyncPending
+          ? ProgressSyncState.waitingForConnection
+          : ProgressSyncState.idle;
+      communityInvitationHandled =
+          await _prefs.getBool(_communityInvitationHandledKey) ?? false;
 
       remoteCourses = await _contentService.loadInstalledCourses();
       installedContentVersion = await _contentService.getInstalledVersion();
@@ -110,11 +202,19 @@ class AppController extends ChangeNotifier {
       notifyListeners();
     }
 
-    if (onboardingComplete && !registrationSynced) {
+    await _startConnectivityMonitoring();
+
+    if (onboardingComplete && !registrationSynced && _networkAvailable) {
       unawaited(_retryPendingRegistration());
     }
     if (shouldCheckOnline && onboardingComplete) {
       unawaited(checkForContentUpdates(silent: true));
+    }
+    if (onboardingComplete &&
+        (_completedLessons.isNotEmpty ||
+            _completedMissions.isNotEmpty ||
+            _quizScores.isNotEmpty)) {
+      unawaited(syncProgress());
     }
   }
 
@@ -360,15 +460,227 @@ class AppController extends ChangeNotifier {
   void completeLesson(String id) {
     if (_completedLessons.add(id)) {
       xp += 50;
-      notifyListeners();
+      _markProgressChanged();
     }
   }
 
   void completeMission(String id, int score) {
     final firstCompletion = _completedMissions.add(id);
     final previous = _missionScores[id] ?? 0;
-    if (score > previous) _missionScores[id] = score;
+    final betterScore = score > previous;
+    if (betterScore) _missionScores[id] = score;
     if (firstCompletion) xp += 120;
+    if (firstCompletion || betterScore) {
+      _markProgressChanged();
+    } else {
+      notifyListeners();
+    }
+  }
+
+  void completeQuiz(String id, int scorePercent) {
+    final safeScore = scorePercent.clamp(0, 100).toInt();
+    final previous = _quizScores[id];
+    final firstCompletion = previous == null;
+    if (firstCompletion || safeScore > previous) {
+      _quizScores[id] = safeScore;
+      if (firstCompletion) xp += 80;
+      _markProgressChanged();
+    } else {
+      notifyListeners();
+    }
+  }
+
+  void _markProgressChanged() {
+    progressSyncPending = true;
+    progressSyncError = null;
+    progressSyncState = _networkAvailable
+        ? ProgressSyncState.idle
+        : ProgressSyncState.waitingForConnection;
+    notifyListeners();
+    unawaited(_persistProgress());
+    if (_networkAvailable) unawaited(syncProgress());
+  }
+
+  Future<void> _persistProgress() async {
+    await Future.wait<void>([
+      _prefs.setStringList(
+        _completedLessonsKey,
+        _completedLessons.toList()..sort(),
+      ),
+      _prefs.setStringList(
+        _completedMissionsKey,
+        _completedMissions.toList()..sort(),
+      ),
+      _prefs.setString(_missionScoresKey, jsonEncode(_missionScores)),
+      _prefs.setString(_quizScoresKey, jsonEncode(_quizScores)),
+      _prefs.setInt(_xpKey, xp),
+      _prefs.setBool(_progressPendingKey, progressSyncPending),
+    ]);
+  }
+
+  Future<void> _startConnectivityMonitoring() async {
+    try {
+      final connectivity = Connectivity();
+      final initial = await connectivity.checkConnectivity();
+      _handleConnectivity(initial);
+      _connectivitySubscription = connectivity.onConnectivityChanged.listen(
+        _handleConnectivity,
+        onError: (_) {
+          _networkAvailable = false;
+          if (progressSyncPending) {
+            progressSyncState = ProgressSyncState.waitingForConnection;
+            notifyListeners();
+          }
+        },
+      );
+    } catch (_) {
+      _networkAvailable = false;
+      if (progressSyncPending) {
+        progressSyncState = ProgressSyncState.waitingForConnection;
+      }
+    }
+  }
+
+  void _handleConnectivity(List<ConnectivityResult> results) {
+    final wasOnline = _networkAvailable;
+    _networkAvailable =
+        results.any((result) => result != ConnectivityResult.none);
+
+    if (!_networkAvailable) {
+      if (progressSyncPending) {
+        progressSyncState = ProgressSyncState.waitingForConnection;
+        notifyListeners();
+      }
+      return;
+    }
+
+    if (!wasOnline || progressSyncPending) {
+      if (onboardingComplete && !registrationSynced) {
+        unawaited(_retryPendingRegistration());
+      }
+      if (progressSyncPending ||
+          _completedLessons.isNotEmpty ||
+          _completedMissions.isNotEmpty ||
+          _quizScores.isNotEmpty) {
+        unawaited(syncProgress());
+      }
+    }
+  }
+
+  Future<bool> syncProgress({bool force = false}) async {
+    if (_progressSyncInFlight) return false;
+    if (_completedLessons.isEmpty &&
+        _completedMissions.isEmpty &&
+        _quizScores.isEmpty) {
+      return true;
+    }
+    if (learnerName.trim().isEmpty || !_isValidEmail(learnerEmail.trim())) {
+      progressSyncPending = true;
+      progressSyncState = ProgressSyncState.idle;
+      await _persistProgress();
+      notifyListeners();
+      return false;
+    }
+    if (!_networkAvailable && !force) {
+      progressSyncPending = true;
+      progressSyncState = ProgressSyncState.waitingForConnection;
+      await _persistProgress();
+      notifyListeners();
+      return false;
+    }
+
+    _progressSyncInFlight = true;
+    progressSyncState = ProgressSyncState.syncing;
+    progressSyncError = null;
+    notifyListeners();
+
+    try {
+      final response = await _progressSyncService.sync(<String, dynamic>{
+        'schemaVersion': 1,
+        'appName': 'Drone Atlas Academy',
+        'appVersion': '3.5.0',
+        'profile': <String, String>{
+          'name': learnerName.trim(),
+          'profession': learnerProfession.trim(),
+          'email': learnerEmail.trim().toLowerCase(),
+        },
+        'progress': <String, dynamic>{
+          'completedLessons': _completedLessons.toList()..sort(),
+          'completedMissions': _completedMissions.toList()..sort(),
+          'missionScores': _missionScores,
+          'quizScores': _quizScores,
+          'xp': xp,
+          'updatedAt': DateTime.now().toUtc().toIso8601String(),
+        },
+      });
+
+      final merged = response['progress'];
+      if (merged is Map<String, dynamic>) {
+        final lessons = merged['completedLessons'];
+        if (lessons is List) {
+          _completedLessons.addAll(lessons.whereType<String>());
+        }
+        final missions = merged['completedMissions'];
+        if (missions is List) {
+          _completedMissions.addAll(missions.whereType<String>());
+        }
+        final scores = merged['missionScores'];
+        if (scores is Map<String, dynamic>) {
+          for (final entry in scores.entries) {
+            final value = entry.value;
+            if (value is num && value.toInt() > (_missionScores[entry.key] ?? 0)) {
+              _missionScores[entry.key] = value.toInt();
+            }
+          }
+        }
+        final quizScores = merged['quizScores'];
+        if (quizScores is Map<String, dynamic>) {
+          for (final entry in quizScores.entries) {
+            final value = entry.value;
+            if (value is num && value.toInt() > (_quizScores[entry.key] ?? 0)) {
+              _quizScores[entry.key] = value.toInt();
+            }
+          }
+        }
+        final remoteXp = merged['xp'];
+        if (remoteXp is num && remoteXp.toInt() > xp) xp = remoteXp.toInt();
+      }
+
+      progressSyncPending = false;
+      progressSyncState = ProgressSyncState.synced;
+      progressSyncError = null;
+      lastProgressSyncedAt = DateTime.now();
+      await _prefs.setString(
+        _lastProgressSyncKey,
+        lastProgressSyncedAt!.toUtc().toIso8601String(),
+      );
+      await _persistProgress();
+      notifyListeners();
+      return true;
+    } on ProgressSyncException catch (error) {
+      progressSyncPending = true;
+      progressSyncError = error.message;
+      progressSyncState = _networkAvailable
+          ? ProgressSyncState.error
+          : ProgressSyncState.waitingForConnection;
+      await _persistProgress();
+      notifyListeners();
+      return false;
+    } catch (error) {
+      progressSyncPending = true;
+      progressSyncError = error.toString();
+      progressSyncState = ProgressSyncState.error;
+      await _persistProgress();
+      notifyListeners();
+      return false;
+    } finally {
+      _progressSyncInFlight = false;
+    }
+  }
+
+  Future<void> markCommunityInvitationHandled() async {
+    communityInvitationHandled = true;
+    await _prefs.setBool(_communityInvitationHandledKey, true);
     notifyListeners();
   }
 
@@ -505,8 +817,10 @@ class AppController extends ChangeNotifier {
 
   @override
   void dispose() {
+    _connectivitySubscription?.cancel();
     _contentService.dispose();
     _registrationService.dispose();
+    _progressSyncService.dispose();
     super.dispose();
   }
 }

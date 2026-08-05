@@ -446,7 +446,7 @@ async function handleVerify(certificateId) {
     pathTitle: metadata.pathTitle,
     score: metadata.score,
     issuedAt: metadata.issuedAt,
-    issuer: 'DroneAtlas Academy — Novateur221',
+    issuer: 'Drone Atlas Academy — Novateur221',
     status: 'Émis automatiquement',
   });
 }

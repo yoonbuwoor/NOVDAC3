@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../core/theme.dart';
+import '../widgets/community_card.dart';
 
 /// Écran public temporaire utilisé pour la première publication Play Store.
 ///
@@ -60,7 +61,7 @@ class CertificationHubScreen extends StatelessWidget {
                   ),
                   SizedBox(height: 12),
                   Text(
-                    'Restez connectés pour découvrir les prochaines mises à jour de DroneAtlas Academy.',
+                    'Restez connectés pour découvrir les prochaines mises à jour de Drone Atlas Academy.',
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 15,
@@ -120,6 +121,8 @@ class CertificationHubScreen extends StatelessWidget {
               title: 'Explorez toutes les fonctionnalités',
               text: 'Utilisez les outils, simulations, ressources et conseils proposés dans l’application pour progresser.',
             ),
+            const SizedBox(height: 20),
+            const CommunityCard(compact: true),
             const SizedBox(height: 24),
             FilledButton.icon(
               onPressed: () => Navigator.maybePop(context),

@@ -10,6 +10,7 @@ import '../data/quiz_catalog.dart';
 import '../data/resource_library.dart';
 import '../models/academy_models.dart';
 import '../widgets/common.dart';
+import '../widgets/community_card.dart';
 import '../widgets/flight_readiness_card.dart';
 import 'course_detail_screen.dart';
 import 'domain_detail_screen.dart';
@@ -138,6 +139,14 @@ class HomeScreen extends StatelessWidget {
               ),
             ),
           ),
+          const SliverToBoxAdapter(
+            child: MaxWidthBox(
+              child: Padding(
+                padding: EdgeInsets.fromLTRB(20, 28, 20, 0),
+                child: CommunityCard(),
+              ),
+            ),
+          ),
           SliverToBoxAdapter(
             child: MaxWidthBox(
               child: Padding(
@@ -164,7 +173,7 @@ class HomeScreen extends StatelessWidget {
                 padding: const EdgeInsets.fromLTRB(20, 32, 20, 12),
                 child: const SectionHeading(
                   eyebrow: 'TON COCKPIT',
-                  title: 'Aujourd’hui dans DroneAtlas',
+                  title: 'Aujourd’hui dans Drone Atlas Academy',
                   subtitle: 'Continue là où tu t’es arrêté et renforce les compétences les plus utiles.',
                 ),
               ),
@@ -693,7 +702,7 @@ class _NovaHero extends StatelessWidget {
                       spacing: 8,
                       runSpacing: 8,
                       children: const [
-                        Pill(label: 'DRONEATLAS ACADEMY', icon: Icons.auto_awesome_rounded),
+                        Pill(label: 'DRONE ATLAS ACADEMY', icon: Icons.auto_awesome_rounded),
                         Pill(label: '100 % HORS LIGNE', icon: Icons.offline_bolt_rounded, color: success),
                       ],
                     ),

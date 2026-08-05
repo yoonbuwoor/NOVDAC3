@@ -109,7 +109,7 @@ class _SplashScreenState extends State<SplashScreen>
                         ),
                         SizedBox(height: 13),
                         Text(
-                          'DroneAtlas Academy • Novateur221',
+                          'Drone Atlas Academy • Novateur221',
                           style: TextStyle(color: Colors.white54, fontSize: 12),
                         ),
                       ],

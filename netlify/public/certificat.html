@@ -13,7 +13,7 @@
 </head>
 <body>
 <main>
-  <h1>DroneAtlas Academy</h1>
+  <h1>Drone Atlas Academy</h1>
   <p class="muted">Vérification automatique d’un certificat pédagogique émis par Novateur221.</p>
   <section id="result"><p>Vérification en cours…</p></section>
 </main>
@@ -33,7 +33,7 @@
       <div class="row"><div class="label">Résultat</div><div class="value">${data.score} %</div></div>
       <div class="row"><div class="label">Identifiant</div><div class="value">${escapeHtml(data.certificateId)}</div></div>
       <div class="row"><div class="label">Date d’émission</div><div class="value">${new Date(data.issuedAt).toLocaleDateString('fr-FR')}</div></div>
-      <p class="muted">Ce certificat atteste la réussite d’un parcours pédagogique DroneAtlas Academy. Il ne remplace pas une licence ou une autorisation de l’ANACIM.</p>`;
+      <p class="muted">Ce certificat atteste la réussite d’un parcours pédagogique Drone Atlas Academy. Il ne remplace pas une licence ou une autorisation de l’ANACIM.</p>`;
   }catch(error){result.innerHTML='<p class="error">'+escapeHtml(error.message)+'</p>';}
 })();
 function escapeHtml(value){return String(value).replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));}

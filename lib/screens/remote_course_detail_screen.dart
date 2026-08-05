@@ -4,6 +4,7 @@ import '../controllers/app_controller.dart';
 import '../core/theme.dart';
 import '../models/remote_content_models.dart';
 import '../widgets/common.dart';
+import '../widgets/community_card.dart';
 
 class RemoteCourseDetailScreen extends StatefulWidget {
   const RemoteCourseDetailScreen({
@@ -117,11 +118,17 @@ class _RemoteCourseDetailScreenState
                     FilledButton.icon(
                       onPressed: _onQuiz
                           ? (_answered
-                              ? () {
-                                  controller.completeLesson(
-                                    'remote_${widget.course.id}',
-                                  );
-                                  Navigator.pop(context);
+                              ? () async {
+                                  final lessonId = 'remote_${widget.course.id}';
+                                  final firstCompletion =
+                                      !controller.lessonCompleted(lessonId);
+                                  controller.completeLesson(lessonId);
+                                  if (firstCompletion &&
+                                      controller.canOfferCommunityInvitation) {
+                                    await showDroneAtlasCommunityInvitation(context);
+                                    await controller.markCommunityInvitationHandled();
+                                  }
+                                  if (context.mounted) Navigator.pop(context);
                                 }
                               : null)
                           : () => setState(() => _pageIndex++),

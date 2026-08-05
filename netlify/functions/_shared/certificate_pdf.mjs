@@ -87,7 +87,7 @@ export async function generateCertificatePdf({
     height: logoHeight,
   });
 
-  page.drawText('DRONEATLAS ACADEMY', {
+  page.drawText('DRONE ATLAS ACADEMY', {
     x: WIDTH - 300,
     y: HEIGHT - 48,
     size: 20,
@@ -113,9 +113,9 @@ export async function generateCertificatePdf({
   const pathSize = fitText(bold, pathTitle, 700, 23, 16);
   drawCentered(page, bold, pathTitle, 270, pathSize, burgundy);
 
-  const description = 'Le candidat a réussi les évaluations à prérequis et l’examen final sécurisé du parcours DroneAtlas Academy.';
+  const description = 'Le candidat a réussi les évaluations à prérequis et l’examen final sécurisé du parcours Drone Atlas Academy.';
   const line1 = 'Le candidat a réussi les évaluations à prérequis et l’examen final';
-  const line2 = 'sécurisé du parcours DroneAtlas Academy.';
+  const line2 = 'sécurisé du parcours Drone Atlas Academy.';
   drawCentered(page, regular, line1, 226, 12, gray);
   drawCentered(page, regular, line2, 208, 12, gray);
 
@@ -136,7 +136,7 @@ export async function generateCertificatePdf({
   page.drawImage(qr, { x: WIDTH - 177, y: 82, width: 92, height: 92 });
   page.drawText('Vérification automatique', { x: WIDTH - 190, y: 64, size: 9, font: bold, color: navy });
 
-  page.drawText('Émis automatiquement par DroneAtlas Academy — Novateur221', {
+  page.drawText('Émis automatiquement par Drone Atlas Academy — Novateur221', {
     x: 90,
     y: 65,
     size: 10,
@@ -166,7 +166,7 @@ export async function generateCertificatePdf({
         });
       }
     }
-    page.drawText('DRONEATLAS ACADEMY — NOVATEUR221', {
+    page.drawText('DRONE ATLAS ACADEMY — NOVATEUR221', {
       x: 115,
       y: 295,
       size: 32,
@@ -178,7 +178,7 @@ export async function generateCertificatePdf({
   }
 
   pdf.setTitle(`${preview ? 'Aperçu' : 'Certificat'} ${certificateId}`);
-  pdf.setAuthor('DroneAtlas Academy — Novateur221');
+  pdf.setAuthor('Drone Atlas Academy — Novateur221');
   pdf.setSubject(pathTitle);
   pdf.setCreator('DroneAtlas Certification Service');
 

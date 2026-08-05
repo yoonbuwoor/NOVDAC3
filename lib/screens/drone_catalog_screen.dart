@@ -15,7 +15,7 @@ String _novateur221SalesWhatsAppUrl([String? droneName]) {
   final subject = droneName ?? 'un drone DJI';
   final message =
       'Bonjour Novateur221, je souhaite recevoir des renseignements sur '
-      '$subject via DroneAtlas Academy. Pouvez-vous m’aider à vérifier le '
+      '$subject via Drone Atlas Academy. Pouvez-vous m’aider à vérifier le '
       'prix, la disponibilité et à identifier un fournisseur certifié adapté '
       'à mon besoin ?';
   return 'https://wa.me/$_novateur221SalesPhone?text=${Uri.encodeComponent(message)}';

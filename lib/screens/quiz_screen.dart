@@ -1,18 +1,22 @@
 import 'package:flutter/material.dart';
 
+import '../controllers/app_controller.dart';
 import '../core/theme.dart';
 import '../data/academy_data.dart';
 import '../models/academy_models.dart';
 import '../widgets/common.dart';
+import '../widgets/community_card.dart';
 
 class QuizScreen extends StatefulWidget {
   const QuizScreen({
     super.key,
+    this.quizId = 'general',
     this.title = 'Quiz général',
     this.subtitle,
     this.questions,
   });
 
+  final String quizId;
   final String title;
   final String? subtitle;
   final List<QuizQuestion>? questions;
@@ -37,9 +41,19 @@ class _QuizScreenState extends State<QuizScreen> {
     });
   }
 
-  void _next() {
+  Future<void> _next() async {
     if (_index == _questions.length - 1) {
+      final controller = AppScope.of(context);
+      final firstCompletion = !controller.quizScores.containsKey(widget.quizId);
+      final percent = _questions.isEmpty
+          ? 0
+          : ((_score / _questions.length) * 100).round();
+      controller.completeQuiz(widget.quizId, percent);
       setState(() => _index++);
+      if (firstCompletion && controller.canOfferCommunityInvitation) {
+        await showDroneAtlasCommunityInvitation(context);
+        await controller.markCommunityInvitationHandled();
+      }
       return;
     }
     setState(() {

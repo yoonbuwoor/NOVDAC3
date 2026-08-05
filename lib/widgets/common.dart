@@ -136,7 +136,7 @@ class BrandBar extends StatelessWidget {
                   children: [
                     Flexible(
                       child: Text(
-                        title ?? 'DroneAtlas',
+                        title ?? 'Drone Atlas Academy',
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: const TextStyle(

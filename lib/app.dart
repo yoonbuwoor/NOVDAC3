@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'controllers/app_controller.dart';
 import 'core/theme.dart';
@@ -15,12 +16,16 @@ class DroneAtlasApp extends StatefulWidget {
 
 class _DroneAtlasAppState extends State<DroneAtlasApp> {
   final AppController _controller = AppController();
-  ThemeMode _themeMode = ThemeMode.dark;
+  static const String _themePreferenceKey = 'appearance.darkMode';
+
+  final SharedPreferencesAsync _prefs = SharedPreferencesAsync();
+  ThemeMode _themeMode = ThemeMode.light;
 
   @override
   void initState() {
     super.initState();
     _controller.initialize();
+    _loadSavedTheme();
   }
 
   @override
@@ -29,12 +34,20 @@ class _DroneAtlasAppState extends State<DroneAtlasApp> {
     super.dispose();
   }
 
-  void _toggleTheme() {
+  Future<void> _loadSavedTheme() async {
+    final darkMode = await _prefs.getBool(_themePreferenceKey) ?? false;
+    if (!mounted) return;
     setState(() {
-      _themeMode = _themeMode == ThemeMode.dark
-          ? ThemeMode.light
-          : ThemeMode.dark;
+      _themeMode = darkMode ? ThemeMode.dark : ThemeMode.light;
     });
+  }
+
+  void _toggleTheme() {
+    final next = _themeMode == ThemeMode.dark
+        ? ThemeMode.light
+        : ThemeMode.dark;
+    setState(() => _themeMode = next);
+    _prefs.setBool(_themePreferenceKey, next == ThemeMode.dark);
   }
 
   @override
@@ -43,7 +56,7 @@ class _DroneAtlasAppState extends State<DroneAtlasApp> {
       controller: _controller,
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        title: 'DroneAtlas Academy • Novateur221',
+        title: 'Drone Atlas Academy • Novateur221',
         themeMode: _themeMode,
         theme: buildDroneTheme(Brightness.light),
         darkTheme: buildDroneTheme(Brightness.dark),

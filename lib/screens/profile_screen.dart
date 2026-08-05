@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../config/community_config.dart';
 import '../controllers/app_controller.dart';
 import '../core/theme.dart';
 import '../data/academy_data.dart';
@@ -155,7 +156,7 @@ class ProfileScreen extends StatelessWidget {
               child: const SectionHeading(
                 eyebrow: 'NOVATEUR221',
                 title: 'Contactez-nous',
-                subtitle: 'Échange sur DroneAtlas, une formation, un partenariat ou un projet drone.',
+                subtitle: 'Rejoins la communauté officielle ou découvre les activités professionnelles de Novateur221.',
               ),
             ),
           ),
@@ -171,11 +172,11 @@ class ProfileScreen extends StatelessWidget {
                     _ContactCard(
                       icon: Icons.chat_rounded,
                       color: success,
-                      title: 'WhatsApp Novateur221',
-                      subtitle: '+221 78 278 03 02',
+                      title: 'Communauté Drone Atlas Academy',
+                      subtitle: 'Cours, quiz, entraide et annonces de certification',
                       onTap: () => _openExternalLink(
                         context,
-                        'https://wa.me/221782780302?text=Bonjour%20Novateur221%2C%20je%20vous%20contacte%20depuis%20DroneAtlas.',
+                        CommunityConfig.whatsappGroupUrl,
                       ),
                     ),
                     _ContactCard(
@@ -301,7 +302,7 @@ class _ProfileHeader extends StatelessWidget {
                     const SizedBox(height: 4),
                     Text(
                       controller.learnerProfession.isEmpty
-                          ? 'Apprenant DroneAtlas'
+                          ? 'Apprenant Drone Atlas Academy'
                           : controller.learnerProfession,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -376,6 +377,41 @@ class _ProfileHeader extends StatelessWidget {
                         ),
                       ),
                     ],
+                    const SizedBox(height: 9),
+                    Row(
+                      children: [
+                        Icon(
+                          controller.progressSyncState == ProgressSyncState.synced
+                              ? Icons.cloud_done_rounded
+                              : controller.progressSyncState == ProgressSyncState.syncing
+                                  ? Icons.sync_rounded
+                                  : Icons.cloud_upload_outlined,
+                          color: controller.progressSyncState == ProgressSyncState.synced
+                              ? success
+                              : cyan,
+                          size: 15,
+                        ),
+                        const SizedBox(width: 6),
+                        Expanded(
+                          child: Text(
+                            controller.progressSyncLabel,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              color: Colors.white70,
+                              fontSize: 10.5,
+                              fontWeight: FontWeight.w800,
+                            ),
+                          ),
+                        ),
+                        if (controller.progressSyncPending &&
+                            controller.progressSyncState != ProgressSyncState.syncing)
+                          TextButton(
+                            onPressed: () => controller.syncProgress(force: true),
+                            child: const Text('Synchroniser'),
+                          ),
+                      ],
+                    ),
                     const SizedBox(height: 7),
                     Text('${controller.xp} XP • Niveau $level • Domaine : ${controller.selectedDomain}', maxLines: 2, style: const TextStyle(color: Colors.white60, fontSize: 12)),
                   ],
@@ -391,7 +427,7 @@ class _ProfileHeader extends StatelessWidget {
               children: [
                 ProgressRing(value: progress, label: '${(progress * 100).round()} %', size: 68),
                 const SizedBox(width: 13),
-                Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [const Text('Parcours global', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w900)), const SizedBox(height: 4), Text('${controller.completedLessons.length}/$totalCourses leçons', style: const TextStyle(color: Colors.white60, fontSize: 12)), const SizedBox(height: 4), Text('${controller.completedMissions.length} mission(s)', style: const TextStyle(color: orange, fontSize: 12, fontWeight: FontWeight.w800))])),
+                Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [const Text('Parcours global', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w900)), const SizedBox(height: 4), Text('${controller.completedLessons.length}/$totalCourses leçons', style: const TextStyle(color: Colors.white60, fontSize: 12)), const SizedBox(height: 4), Text('${controller.completedMissions.length} mission(s) • ${controller.quizScores.length} quiz', style: const TextStyle(color: orange, fontSize: 12, fontWeight: FontWeight.w800))])),
               ],
             ),
           );
@@ -418,7 +454,7 @@ final _badges = <_BadgeData>[
   _BadgeData('Planificateur', 'Valider 4 leçons', Icons.route_rounded, orange, (c) => c.completedLessons.length >= 4),
   _BadgeData('Photogrammètre', 'Valider 10 leçons', Icons.view_in_ar_rounded, violet, (c) => c.completedLessons.length >= 10),
   _BadgeData('Chef de mission', 'Réussir une mission', Icons.flag_rounded, success, (c) => c.completedMissions.isNotEmpty),
-  _BadgeData('Expert DroneAtlas', 'Terminer tout le parcours', Icons.emoji_events_rounded, danger, (c) => c.completedLessons.length >= totalLessonCount),
+  _BadgeData('Expert Drone Atlas Academy', 'Terminer tout le parcours', Icons.emoji_events_rounded, danger, (c) => c.completedLessons.length >= totalLessonCount),
 ];
 
 class _BadgeCard extends StatelessWidget {
