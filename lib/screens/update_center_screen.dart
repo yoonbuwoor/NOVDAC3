@@ -395,7 +395,7 @@ class _NotificationCard extends StatelessWidget {
                 underline: const SizedBox.shrink(),
                 items: const [
                   DropdownMenuItem(value: 'off', child: Text('Désactivés')),
-                  DropdownMenuItem(value: 'daily', child: Text('Chaque jour')),
+                  DropdownMenuItem(value: 'daily', child: Text('Toutes les 6 heures')),
                   DropdownMenuItem(
                     value: 'three_per_week',
                     child: Text('3 fois/semaine'),
