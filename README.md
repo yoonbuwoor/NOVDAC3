@@ -1,66 +1,57 @@
-# DroneAtlas Nova 3.0
+# Drone Atlas Academy 3.5.0
 
-Application Flutter pédagogique complète pour apprendre et pratiquer :
+Application Flutter pédagogique de Novateur221 consacrée aux drones, à la photogrammétrie, à la géomatique, à la météo opérationnelle, aux capteurs et à l’IA géospatiale.
 
-- drones et sécurité opérationnelle ;
-- photographie aérienne ;
-- photogrammétrie ;
-- planification et acquisition terrain ;
-- contrôle qualité et SIG ;
-- multispectral, thermique et LiDAR ;
-- IA géospatiale ;
-- rapport, métier et activité professionnelle.
+## Version Play Store actuelle
 
-## Expérience Nova
-
-- cockpit responsive ;
-- 12 modules et 36 leçons intégrées ;
-- 6 missions scénarisées ;
-- 10 domaines d’application ;
-- Nova Labs avec calculateur de mission et checklist terrain ;
-- simulateur de planification, caméra, fragments et traitement ;
-- Rapport Studio ;
-- quiz et glossaire ;
-- Drobot Nova, expert hors ligne extensible par IA en ligne ;
-- progression, XP, badges et notifications ;
-- mise à jour des cours par fichiers JSON.
-
-Le détail complet est dans [NOUVEAUTES_3_0_NOVA.md](NOUVEAUTES_3_0_NOVA.md).
+- mode jour par défaut ;
+- cours, quiz, missions, laboratoire, Drobot et ressources accessibles ;
+- parcours certifiants annoncés comme **bientôt disponibles** ;
+- progression sauvegardée hors connexion ;
+- synchronisation automatique au retour d’Internet ;
+- meilleurs scores des quiz et missions conservés ;
+- communauté WhatsApp officielle intégrée ;
+- aucun numéro de téléphone affiché dans le profil.
 
 ## Compiler sur GitHub
 
-1. Envoyer tout le contenu du dossier dans le dépôt GitHub.
-2. Ouvrir **Actions**.
-3. Choisir **Build DroneAtlas Nova Android**.
-4. Cliquer sur **Run workflow**.
-5. Télécharger l’artefact **DroneAtlas-Nova-3.0-Android**.
+1. Copiez tout le contenu de ce dossier à la racine du dépôt GitHub.
+2. Vérifiez les quatre secrets de signature Android.
+3. Ouvrez **Actions**.
+4. Choisissez **Build Drone Atlas Academy Android**.
+5. Cliquez sur **Run workflow**.
+6. Téléchargez l’artefact **Drone-Atlas-Academy-3.5.0-PlayStore**.
 
-L’artefact contient l’APK et l’AAB Release.
+L’artefact contient l’APK de test et l’AAB destiné au Play Store.
 
-## EmailJS
+## Synchronisation de la progression
 
-La version contient la configuration communiquée :
-
-- `service_726u54k`
-- `template_9y2rmzx`
-- Public Key EmailJS configurée
-
-Le template doit au minimum utiliser :
+La fonction serveur est incluse dans :
 
 ```text
-{{name}}
-{{profession}}
-{{email}}
+netlify/functions/progress-api.mjs
 ```
 
-`{{date}}` reste facultatif.
+Elle utilise Backblaze B2 pour conserver et fusionner la progression. L’URL par défaut de l’application est :
+
+```text
+https://droneatlas.xyz/.netlify/functions/progress-api
+```
+
+Pour utiliser une autre adresse, créez sur GitHub le secret facultatif :
+
+```text
+PROGRESS_SYNC_URL
+```
+
+Le dépôt Netlify doit disposer des variables B2 listées dans `VERSION_PLAYSTORE_3_5_0.md`.
 
 ## Drobot en ligne
 
-La base experte hors ligne fonctionne sans clé. Pour connecter un proxy IA, créer le secret GitHub :
+La base experte hors ligne reste accessible sans clé. Pour connecter un proxy IA, créez le secret GitHub :
 
 ```text
 DROBOT_API_URL
 ```
 
-Ne place jamais une clé privée d’API directement dans l’APK.
+Ne placez jamais une clé privée d’API directement dans l’APK.

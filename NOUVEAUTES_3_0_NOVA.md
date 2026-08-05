@@ -1,6 +1,6 @@
 # DroneAtlas Nova 3.0
 
-DroneAtlas Academy devient **DroneAtlas Nova**, une expérience Flutter entièrement repensée autour d’un cockpit d’apprentissage, d’un laboratoire opérationnel et de Drobot Nova.
+Drone Atlas Academy devient **DroneAtlas Nova**, une expérience Flutter entièrement repensée autour d’un cockpit d’apprentissage, d’un laboratoire opérationnel et de Drobot Nova.
 
 ## Nouveau design
 

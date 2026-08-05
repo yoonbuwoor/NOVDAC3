@@ -1,4 +1,4 @@
-# DroneAtlas Academy 2.3 — EmailJS
+# Drone Atlas Academy 2.3 — EmailJS
 
 - FormSubmit supprimé.
 - Envoi du mini-formulaire via l’API EmailJS.

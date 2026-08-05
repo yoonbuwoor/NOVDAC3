@@ -1,4 +1,4 @@
-# DroneAtlas Academy — Certifications sans Firebase Blaze
+# Drone Atlas Academy — Certifications sans Firebase Blaze
 
 Ce pack met en place le système de certifications proposé sans utiliser Cloud Storage, Firestore ni Cloud Functions de Firebase.
 

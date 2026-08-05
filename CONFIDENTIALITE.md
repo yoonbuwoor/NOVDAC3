@@ -1,6 +1,6 @@
-# Confidentialité — DroneAtlas Academy
+# Confidentialité — Drone Atlas Academy
 
-Au premier lancement, DroneAtlas demande le nom, la profession ou le domaine d’activité et l’adresse e-mail de l’utilisateur.
+Au premier lancement, Drone Atlas Academy demande le nom, la profession ou le domaine d’activité et l’adresse e-mail de l’utilisateur.
 
 Ces informations servent à :
 
@@ -8,6 +8,15 @@ Ces informations servent à :
 - connaître les profils professionnels intéressés par la formation ;
 - recevoir une fiche d’inscription par e-mail.
 
-Elles sont enregistrées localement sur l’appareil et transmises par connexion HTTPS. Aucun compte communautaire, réseau social interne ou base de données distante n’est créé par l’application.
+Elles sont enregistrées localement sur l’appareil et transmises par connexion HTTPS aux services configurés par Novateur221. L’application ne crée aucun réseau social interne et ne demande aucun numéro de téléphone.
 
 L’utilisateur peut modifier ses informations depuis l’onglet **Profil**.
+
+
+## Progression pédagogique
+
+Drone Atlas Academy enregistre localement les leçons, quiz et missions validés, les meilleurs scores et les points d’expérience. Lorsque l’appareil retrouve une connexion Internet, ces informations sont synchronisées automatiquement avec le service de sauvegarde de Novateur221 afin de restaurer et fusionner la progression. Aucun numéro de téléphone n’est demandé ni affiché par l’application.
+
+## Communauté WhatsApp
+
+L’accès à la communauté est facultatif et ne se fait qu’après une action volontaire de l’utilisateur. L’application ne lit pas le numéro WhatsApp, ne publie aucun message automatiquement et ne transmet pas la progression au groupe.

@@ -1,4 +1,4 @@
-DRONEATLAS ACADEMY — MISE A JOUR MOBILE
+DRONE ATLAS ACADEMY — MISE A JOUR MOBILE
 
 Ce ZIP contient uniquement les fichiers nouveaux ou modifies.
 
@@ -22,7 +22,7 @@ FONCTIONNALITES AJOUTEES
 - Page Reglementation ANACIM.
 - Alertes NO-GO / PRUDENCE dans le simulateur : altitude, nuit, BVLOS, aerodrome, espace controle, zone peuplee.
 - Drobot enrichi pour recommandations de drones, reglementation et planification de 50 ha.
-- Nouveau logo DroneAtlas Academy + Novateur221 et nouvelle palette.
+- Nouveau logo Drone Atlas Academy + Novateur221 et nouvelle palette.
 - Navigation mobile Accueil / Drobot / Simulateur / Drones / Profil.
 
 VALIDATION EFFECTUEE

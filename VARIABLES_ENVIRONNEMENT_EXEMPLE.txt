@@ -4,6 +4,7 @@ FIREBASE_APP_ID=
 FIREBASE_MESSAGING_SENDER_ID=
 FIREBASE_PROJECT_ID=
 FIREBASE_AUTH_DOMAIN=
+PROGRESS_SYNC_URL=https://droneatlas.xyz/.netlify/functions/progress-api
 CERTIFICATION_API_URL=https://VOTRE-SITE.netlify.app/.netlify/functions/certification-api
 
 # Netlify Functions — secrets serveur

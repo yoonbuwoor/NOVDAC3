@@ -1,3 +1,5 @@
+> Document historique : la version active est décrite dans `VERSION_PLAYSTORE_3_5_0.md`.
+
 # DroneAtlas 3.4.1 — Version Play Store
 
 Cette compilation est destinée à la première publication publique de l’application.
@@ -14,7 +16,7 @@ Cette compilation est destinée à la première publication publique de l’appl
 
 ## Message affiché
 
-> Les parcours certifiants arrivent bientôt. Restez connectés pour découvrir les prochaines mises à jour de DroneAtlas Academy. Explorez d’abord les cours, les quiz et les autres fonctionnalités de l’application : les connaissances et compétences acquises vous seront utiles pour réussir les différentes certifications.
+> Les parcours certifiants arrivent bientôt. Restez connectés pour découvrir les prochaines mises à jour de Drone Atlas Academy. Explorez d’abord les cours, les quiz et les autres fonctionnalités de l’application : les connaissances et compétences acquises vous seront utiles pour réussir les différentes certifications.
 
 ## Version
 

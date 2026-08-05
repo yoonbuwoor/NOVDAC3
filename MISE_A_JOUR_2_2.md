@@ -1,4 +1,4 @@
-# DroneAtlas Academy 2.2
+# Drone Atlas Academy 2.2
 
 Cette version apporte :
 

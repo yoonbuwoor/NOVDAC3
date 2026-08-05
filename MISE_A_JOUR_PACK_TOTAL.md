@@ -1,4 +1,4 @@
-# DroneAtlas Academy — Pack total hors ligne
+# Drone Atlas Academy — Pack total hors ligne
 
 Cette mise à jour transforme davantage l'application en véritable bibliothèque professionnelle mobile.
 

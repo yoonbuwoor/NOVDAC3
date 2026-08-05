@@ -1,4 +1,4 @@
-# EmailJS configuré dans DroneAtlas Academy 2.4
+# EmailJS configuré dans Drone Atlas Academy 2.4
 
 La configuration EmailJS est déjà intégrée :
 

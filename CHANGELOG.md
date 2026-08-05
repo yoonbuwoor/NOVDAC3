@@ -1,3 +1,11 @@
+# 3.5.0+19 — Mode jour, progression cloud et communauté
+
+- Mode jour par défaut avec préférence persistante.
+- Progression locale persistante et synchronisation automatique au retour d’Internet.
+- API Netlify de progression avec stockage Backblaze B2 et fusion multi-appareils.
+- Communauté WhatsApp intégrée sans afficher de numéro de téléphone.
+- Nom public : Drone Atlas Academy.
+
 # Version 3.4.1 — Publication Play Store initiale
 
 - Les parcours certifiants sont annoncés comme bientôt disponibles.

@@ -1,4 +1,4 @@
-# DroneAtlas Academy 2.5 — Drobot Expert
+# Drone Atlas Academy 2.5 — Drobot Expert
 
 ## Nouveautés
 
