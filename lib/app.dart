@@ -21,7 +21,6 @@ class _DroneAtlasAppState extends State<DroneAtlasApp> {
   void initState() {
     super.initState();
     _controller.initialize();
-    _loadSavedTheme();
   }
 
   @override
@@ -30,14 +29,14 @@ class _DroneAtlasAppState extends State<DroneAtlasApp> {
     super.dispose();
   }
 
+  void _toggleTheme() {
+    setState(() {
+      _themeMode = _themeMode == ThemeMode.dark
+          ? ThemeMode.light
+          : ThemeMode.dark;
+    });
+  }
 
-void _toggleTheme() {
-  setState(() {
-    _themeMode = _themeMode == ThemeMode.dark
-        ? ThemeMode.light
-        : ThemeMode.dark;
-  });
-}
   @override
   Widget build(BuildContext context) {
     return AppScope(
