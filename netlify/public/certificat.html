@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Vérifier un certificat DroneAtlas</title>
+  <style>
+    :root{--orange:#ff6438;--burgundy:#7e173a;--navy:#07131d;--card:#102433;--muted:#b7c7d1;--green:#30d68a}
+    *{box-sizing:border-box}body{font-family:Arial,sans-serif;background:radial-gradient(circle at top,#19364a,var(--navy) 48%);color:#fff;display:grid;place-items:center;min-height:100vh;margin:0;padding:22px}
+    main{width:min(720px,100%);background:rgba(16,36,51,.96);border:1px solid #365165;border-radius:28px;padding:30px;box-shadow:0 25px 80px #0008}
+    h1{margin:0;color:var(--orange)}h2{font-size:28px;margin:24px 0 8px}.badge{display:inline-block;background:#143f30;color:var(--green);padding:8px 13px;border-radius:999px;font-weight:700}.muted{color:var(--muted);line-height:1.55}.row{padding:13px 0;border-bottom:1px solid #ffffff18}.label{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}.value{font-weight:700;margin-top:5px}.error{color:#ff8d78}
+  </style>
+</head>
+<body>
+<main>
+  <h1>DroneAtlas Academy</h1>
+  <p class="muted">Vérification automatique d’un certificat pédagogique émis par Novateur221.</p>
+  <section id="result"><p>Vérification en cours…</p></section>
+</main>
+<script>
+(async()=>{
+  const id=new URLSearchParams(location.search).get('id');
+  const result=document.getElementById('result');
+  if(!id){result.innerHTML='<p class="error">Identifiant manquant.</p>';return;}
+  try{
+    const url='/.netlify/functions/certification-api?action=verify&id='+encodeURIComponent(id);
+    const response=await fetch(url,{cache:'no-store'});
+    const data=await response.json();
+    if(!response.ok||!data.valid)throw new Error(data.message||'Certificat inconnu.');
+    result.innerHTML=`<div class="badge">CERTIFICAT AUTHENTIQUE</div>
+      <h2>${escapeHtml(data.fullName)}</h2>
+      <div class="row"><div class="label">Filière</div><div class="value">${escapeHtml(data.pathTitle)}</div></div>
+      <div class="row"><div class="label">Résultat</div><div class="value">${data.score} %</div></div>
+      <div class="row"><div class="label">Identifiant</div><div class="value">${escapeHtml(data.certificateId)}</div></div>
+      <div class="row"><div class="label">Date d’émission</div><div class="value">${new Date(data.issuedAt).toLocaleDateString('fr-FR')}</div></div>
+      <p class="muted">Ce certificat atteste la réussite d’un parcours pédagogique DroneAtlas Academy. Il ne remplace pas une licence ou une autorisation de l’ANACIM.</p>`;
+  }catch(error){result.innerHTML='<p class="error">'+escapeHtml(error.message)+'</p>';}
+})();
+function escapeHtml(value){return String(value).replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));}
+</script>
+</body>
+</html>

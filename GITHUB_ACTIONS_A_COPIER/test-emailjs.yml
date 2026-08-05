@@ -1,0 +1,38 @@
+name: Tester EmailJS
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test-emailjs:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Envoyer un e-mail de test DroneAtlas
+        run: |
+          curl --fail-with-body --show-error --silent \
+            --request POST \
+            --url https://api.emailjs.com/api/v1.0/email/send \
+            --header 'Accept: application/json, text/plain, */*' \
+            --header 'Content-Type: application/json' \
+            --data '{
+              "service_id": "service_726u54k",
+              "template_id": "template_9y2rmzx",
+              "user_id": "fxWkKI41fWVZAmts5",
+              "template_params": {
+                "name": "Test GitHub DroneAtlas",
+                "profession": "Diagnostic EmailJS",
+                "email": "novateur221@gmail.com",
+                "date": "Test manuel GitHub Actions",
+                "time": "Test manuel GitHub Actions",
+                "title": "Test EmailJS DroneAtlas",
+                "message": "Le service EmailJS de DroneAtlas fonctionne.",
+                "to_email": "novateur221@gmail.com",
+                "reply_to": "novateur221@gmail.com"
+              }
+            }'
+          echo
+          echo "EmailJS a accepté la requête. Vérifie la boîte de réception et les spams."

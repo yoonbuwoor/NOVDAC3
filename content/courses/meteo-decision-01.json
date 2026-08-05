@@ -1,0 +1,52 @@
+{
+  "id": "meteo-decision-01",
+  "version": 1,
+  "title": "Météo : voler ou reporter ?",
+  "summary": "La météo influence à la fois la sécurité du drone, la qualité des images et la cohérence du futur modèle.",
+  "category": "Préparation de mission",
+  "duration": "12 min",
+  "level": "Débutant",
+  "objectives": [
+    "Identifier les facteurs météo qui dégradent une mission",
+    "Relier vitesse du vent, autonomie et netteté des images",
+    "Comprendre l’effet d’une lumière changeante",
+    "Savoir reporter une mission quand les conditions deviennent incompatibles"
+  ],
+  "pages": [
+    {
+      "title": "1. Lire plus qu’une icône météo",
+      "body": "Une prévision ensoleillée ne suffit pas. Pour préparer une mission, observe le vent moyen, les rafales, le risque de pluie, la visibilité, la température et l’évolution attendue pendant toute la fenêtre de vol. Ajoute une marge pour l’installation, les vérifications et un éventuel second passage.",
+      "highlight": "La bonne question n’est pas seulement « peut-il décoller ? », mais « peut-il terminer la mission proprement et revenir en sécurité ? »",
+      "tip": "Prépare toujours une condition d’arrêt avant de décoller."
+    },
+    {
+      "title": "2. Vent, rafales et qualité",
+      "body": "Le vent augmente la consommation et peut incliner le drone. Les rafales créent des variations plus brutales et rendent la trajectoire moins régulière. Une vitesse de vol excessive combinée à une mauvaise vitesse d’obturation produit du flou. Sur le simulateur DroneAtlas, compare un vol lent et stable à un vol perturbé : la couverture et la netteté ne réagissent pas de la même manière.",
+      "highlight": "La rafale maximale est souvent plus critique que le vent moyen.",
+      "tip": "Considère aussi le vent au-dessus du sol, qui peut être différent de celui ressenti au décollage."
+    },
+    {
+      "title": "3. Lumière et cohérence radiométrique",
+      "body": "Des nuages rapides font alterner ombre et soleil entre les lignes de vol. L’orthophoto simulée peut alors présenter des bandes visibles et des couleurs incohérentes. Pour un suivi temporel, cherche des conditions comparables entre les campagnes. En multispectral, la stabilité de la lumière et les procédures de calibration deviennent encore plus importantes.",
+      "highlight": "Une mission cohérente vaut souvent mieux qu’une mission réalisée à tout prix.",
+      "tip": "Évite de changer les réglages d’exposition sans raison au milieu d’un même bloc."
+    },
+    {
+      "title": "4. Décider et documenter",
+      "body": "Décoller, suspendre ou reporter est une décision technique. Note les conditions observées, l’heure, les limites retenues et la raison du choix. Si la mission est interrompue, sécurise les données déjà acquises et identifie précisément la partie à reprendre. Cette traçabilité facilite la planification d’un nouveau vol et la rédaction du rapport.",
+      "highlight": "Reporter une mission peut être la meilleure décision professionnelle.",
+      "tip": "Dans le rapport, distingue les prévisions consultées des conditions réellement observées sur le terrain."
+    }
+  ],
+  "quiz": {
+    "question": "Pourquoi des passages nuageux rapides peuvent-ils poser problème pendant l’acquisition ?",
+    "answers": [
+      "Ils modifient uniquement la couleur de l’interface de pilotage",
+      "Ils peuvent créer des différences d’éclairage entre les lignes de vol",
+      "Ils augmentent automatiquement le recouvrement latéral",
+      "Ils corrigent le flou de mouvement"
+    ],
+    "correctAnswer": 1,
+    "explanation": "Une lumière changeante peut produire des images de luminosité différente et rendre l’assemblage radiométrique moins homogène."
+  }
+}

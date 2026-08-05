@@ -1,0 +1,45 @@
+Fichiers inclus :
+
+MODIFIE  android/app/src/main/AndroidManifest.xml
+MODIFIE  android/app/src/main/res/mipmap-hdpi/ic_launcher.png
+MODIFIE  android/app/src/main/res/mipmap-mdpi/ic_launcher.png
+MODIFIE  android/app/src/main/res/mipmap-xhdpi/ic_launcher.png
+MODIFIE  android/app/src/main/res/mipmap-xxhdpi/ic_launcher.png
+MODIFIE  android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png
+MODIFIE  assets/icon/droneatlas_icon.png
+MODIFIE  assets/images/logo.webp
+NOUVEAU  assets/images/logo_full.webp
+MODIFIE  lib/app.dart
+MODIFIE  lib/controllers/app_controller.dart
+MODIFIE  lib/core/theme.dart
+NOUVEAU  lib/data/anacim_rules.dart
+NOUVEAU  lib/data/drone_catalog_data.dart
+NOUVEAU  lib/data/quiz_catalog.dart
+NOUVEAU  lib/models/drone_catalog_models.dart
+NOUVEAU  lib/screens/drobot_home_screen.dart
+NOUVEAU  lib/screens/drone_catalog_screen.dart
+NOUVEAU  lib/screens/drone_history_screen.dart
+MODIFIE  lib/screens/home_screen.dart
+MODIFIE  lib/screens/main_shell.dart
+MODIFIE  lib/screens/profile_screen.dart
+NOUVEAU  lib/screens/quiz_hub_screen.dart
+MODIFIE  lib/screens/quiz_screen.dart
+NOUVEAU  lib/screens/regulation_screen.dart
+MODIFIE  lib/screens/simulator_screen.dart
+MODIFIE  lib/screens/splash_screen.dart
+MODIFIE  lib/services/drobot_service.dart
+MODIFIE  lib/widgets/common.dart
+MODIFIE  pubspec.yaml
+MODIFIE  tool/configure_android.py
+MODIFIE  tool/icons/mipmap-hdpi/ic_launcher.png
+MODIFIE  tool/icons/mipmap-mdpi/ic_launcher.png
+MODIFIE  tool/icons/mipmap-xhdpi/ic_launcher.png
+MODIFIE  tool/icons/mipmap-xxhdpi/ic_launcher.png
+MODIFIE  tool/icons/mipmap-xxxhdpi/ic_launcher.png
+MODIFIE  tool/web_icons/Icon-192.png
+MODIFIE  tool/web_icons/Icon-512.png
+MODIFIE  tool/web_icons/Icon-maskable-192.png
+MODIFIE  tool/web_icons/Icon-maskable-512.png
+
+Total application : 40 fichiers
+Plus ce fichier d instructions.

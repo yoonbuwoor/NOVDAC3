@@ -1,0 +1,16 @@
+[build]
+  publish = "netlify/public"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
+  included_files = ["netlify/functions/assets/**"]
+
+[[headers]]
+  for = "/.netlify/functions/certification-api"
+  [headers.values]
+    Cache-Control = "no-store"
+    X-Content-Type-Options = "nosniff"

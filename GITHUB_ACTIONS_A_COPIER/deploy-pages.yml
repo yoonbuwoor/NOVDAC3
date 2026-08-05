@@ -1,0 +1,73 @@
+name: Deploy DroneAtlas Web
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main, master]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+
+    steps:
+      - name: Télécharger le dépôt
+        uses: actions/checkout@v4
+
+      - name: Installer Flutter stable
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Préparer la plateforme Web
+        run: |
+          rm -rf web
+          flutter create --platforms=web --org com.novateur221 --project-name droneatlas .
+          python3 tool/configure_web.py
+
+      - name: Installer les dépendances
+        run: flutter pub get
+
+      - name: Vérifier le code
+        run: flutter analyze --no-fatal-infos --no-fatal-warnings
+
+      - name: Compiler la PWA
+        run: |
+          flutter build web --release \
+            --dart-define=DROBOT_API_URL="${{ secrets.DROBOT_API_URL }}" \
+            --base-href "/${{ github.event.repository.name }}/"
+
+      - name: Publier aussi le catalogue de cours
+        run: |
+          rm -rf build/web/content
+          cp -R content build/web/content
+
+      - name: Configurer GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Préparer l’artefact Pages
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: build/web
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+      - name: Déployer sur GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 1,
+  "contentVersion": 1,
+  "publishedAt": "2026-07-30T19:30:00Z",
+  "title": "Pack terrain & précision",
+  "description": "Trois nouveaux cours pratiques sur les GCP, la météo et la rédaction d’un rapport professionnel.",
+  "changelog": [
+    "Nouveau cours : positionner et contrôler les GCP",
+    "Nouveau cours : décider si la météo permet le vol",
+    "Nouveau cours : structurer un rapport photogrammétrique",
+    "Quiz final et consultation hors connexion pour chaque cours"
+  ],
+  "courses": [
+    {
+      "id": "gcp-precision-01",
+      "version": 1,
+      "title": "GCP : construire la précision",
+      "summary": "Comprendre le rôle des points de contrôle, leur répartition et leur vérification.",
+      "category": "Photogrammétrie",
+      "duration": "14 min",
+      "url": "courses/gcp-precision-01.json",
+      "accent": "cyan",
+      "icon": "my_location"
+    },
+    {
+      "id": "meteo-decision-01",
+      "version": 1,
+      "title": "Météo : voler ou reporter ?",
+      "summary": "Prendre une décision de sécurité à partir du vent, de la lumière et des risques du terrain.",
+      "category": "Préparation de mission",
+      "duration": "12 min",
+      "url": "courses/meteo-decision-01.json",
+      "accent": "orange",
+      "icon": "cloud"
+    },
+    {
+      "id": "rapport-pro-01",
+      "version": 1,
+      "title": "Du terrain au rapport final",
+      "summary": "Transformer une mission simulée en document clair, traçable et professionnel.",
+      "category": "Rédaction",
+      "duration": "16 min",
+      "url": "courses/rapport-pro-01.json",
+      "accent": "violet",
+      "icon": "description"
+    }
+  ]
+}

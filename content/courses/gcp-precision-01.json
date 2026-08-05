@@ -1,0 +1,52 @@
+{
+  "id": "gcp-precision-01",
+  "version": 1,
+  "title": "GCP : construire la précision",
+  "summary": "Les points de contrôle au sol relient la reconstruction photogrammétrique à des coordonnées connues et mesurables.",
+  "category": "Photogrammétrie",
+  "duration": "14 min",
+  "level": "Intermédiaire",
+  "objectives": [
+    "Différencier un GCP d’un point de contrôle indépendant",
+    "Choisir une répartition adaptée à la zone d’étude",
+    "Reconnaître une cible exploitable dans plusieurs images",
+    "Interpréter une erreur résiduelle sans se limiter à une seule valeur"
+  ],
+  "pages": [
+    {
+      "title": "1. Pourquoi utiliser des GCP ?",
+      "body": "Une reconstruction peut être visuellement réussie tout en étant décalée, tournée ou légèrement déformée. Un GCP est un point matérialisé au sol dont les coordonnées sont connues. Il aide à rattacher le modèle au bon emplacement et à la bonne échelle. Dans DroneAtlas, imagine cinq cibles visibles au sol : leurs coordonnées servent de repères au traitement simulé.",
+      "highlight": "Un beau modèle n’est pas automatiquement un modèle précis.",
+      "tip": "Avant la mission, vérifie le système de coordonnées et l’unité des mesures."
+    },
+    {
+      "title": "2. Bien répartir les points",
+      "body": "Les points doivent encadrer la zone et représenter ses variations de relief. Les regrouper près du point de décollage laisse le reste du site mal contraint. Place des cibles vers les extrémités, puis complète l’intérieur. Sur un terrain en pente, prévois aussi des points à différentes altitudes.",
+      "highlight": "Répartition spatiale > accumulation de points au même endroit.",
+      "tip": "Évite les bords immédiats de l’emprise : une cible doit apparaître dans plusieurs photos."
+    },
+    {
+      "title": "3. Concevoir une cible lisible",
+      "body": "Une cible doit contraster avec le sol, être stable et assez grande pour être reconnue sur les images. Son centre doit être défini sans ambiguïté. Les zones d’ombre, l’herbe haute, les véhicules et les endroits susceptibles d’être masqués sont de mauvais choix. Le point mesuré sur le terrain doit correspondre exactement au point marqué dans les images.",
+      "highlight": "La précision dépend aussi de la qualité du marquage dans les images.",
+      "tip": "Zoome sur plusieurs fragments simulés avant de valider le centre d’une cible."
+    },
+    {
+      "title": "4. Contrôler sans tricher",
+      "body": "Tous les points ne doivent pas servir à ajuster le modèle. Garde quelques points indépendants pour vérifier le résultat final. Compare leurs coordonnées mesurées aux coordonnées obtenues dans le modèle, puis analyse les écarts horizontaux et verticaux. Un résultat fiable décrit aussi les limites, la méthode de mesure et les éventuels points rejetés.",
+      "highlight": "Un point de contrôle indépendant vérifie le modèle ; il ne le corrige pas.",
+      "tip": "Dans le rapport, distingue clairement les points d’ajustement et les points de vérification."
+    }
+  ],
+  "quiz": {
+    "question": "Quelle disposition est la plus pertinente pour une zone étendue avec du relief ?",
+    "answers": [
+      "Tous les GCP près du point de décollage",
+      "Des GCP répartis autour et dans la zone, à différentes altitudes",
+      "Un seul GCP au centre de la zone",
+      "Des GCP uniquement le long d’une même ligne"
+    ],
+    "correctAnswer": 1,
+    "explanation": "Une distribution autour et à l’intérieur de l’emprise, couvrant aussi les différences d’altitude, contraint mieux la géométrie générale et permet un contrôle plus représentatif."
+  }
+}

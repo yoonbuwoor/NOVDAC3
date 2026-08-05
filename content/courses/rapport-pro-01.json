@@ -1,0 +1,52 @@
+{
+  "id": "rapport-pro-01",
+  "version": 1,
+  "title": "Du terrain au rapport final",
+  "summary": "Un rapport photogrammétrique explique l’objectif, les décisions, la méthode, la qualité et les limites des livrables.",
+  "category": "Rédaction",
+  "duration": "16 min",
+  "level": "Intermédiaire",
+  "objectives": [
+    "Organiser un rapport de mission logique",
+    "Relier chaque résultat à l’objectif initial",
+    "Présenter les paramètres sans noyer le lecteur",
+    "Formuler les limites et recommandations de manière professionnelle"
+  ],
+  "pages": [
+    {
+      "title": "1. Partir du besoin",
+      "body": "Commence par le contexte, le commanditaire ou l’exercice simulé, la zone et la question à résoudre. Un rapport ne doit pas seulement raconter le vol : il doit montrer pourquoi la mission a été réalisée et à quoi serviront les produits. Reformule l’objectif en résultats vérifiables, par exemple produire une orthophoto, calculer un volume ou documenter l’évolution d’un site.",
+      "highlight": "Chaque carte et chaque tableau doivent répondre à une question annoncée.",
+      "tip": "Écris l’objectif avant la méthodologie pour garder le rapport orienté vers le besoin."
+    },
+    {
+      "title": "2. Décrire une méthode reproductible",
+      "body": "Présente le matériel, les paramètres de planification, les conditions de terrain, les repères utilisés et la chaîne de traitement simulée. Sélectionne les informations qui influencent le résultat : altitude, recouvrements, type d’images, système de coordonnées, contrôle qualité et logiciels ou modules employés. Une autre personne doit pouvoir comprendre les choix et reproduire la logique.",
+      "highlight": "La méthodologie décrit les décisions importantes, pas chaque clic effectué.",
+      "tip": "Utilise un tableau synthétique pour les paramètres de mission."
+    },
+    {
+      "title": "3. Présenter les résultats avec leurs preuves",
+      "body": "Insère les produits utiles avec un titre, une légende, une échelle, une orientation et une source. Accompagne les mesures d’unités et de conditions de calcul. Pour une comparaison temporelle, précise les dates et vérifie que les méthodes sont compatibles. Sépare les observations directement visibles des interprétations.",
+      "highlight": "Une image spectaculaire sans contexte n’est pas un résultat démontré.",
+      "tip": "Numérote les figures et cite-les dans le texte."
+    },
+    {
+      "title": "4. Assumer les limites",
+      "body": "Décris les zones mal reconstruites, les conditions défavorables, l’absence éventuelle de points indépendants, les incertitudes et les usages déconseillés. Termine par des recommandations concrètes : reprise locale, amélioration du recouvrement, ajout de contrôles, période de vol différente ou précision complémentaire. Une limite expliquée renforce la crédibilité du rapport.",
+      "highlight": "La transparence sur les limites protège l’utilisateur des mauvaises interprétations.",
+      "tip": "Évite les formules vagues comme « résultat très précis » sans indicateur ni méthode de contrôle."
+    }
+  ],
+  "quiz": {
+    "question": "Quel élément rend une méthodologie réellement utile dans un rapport ?",
+    "answers": [
+      "La liste exhaustive de tous les clics dans le logiciel",
+      "La description des paramètres et décisions qui influencent le résultat",
+      "Uniquement la marque du drone",
+      "Une capture d’écran sans commentaire"
+    ],
+    "correctAnswer": 1,
+    "explanation": "Une méthode utile permet de comprendre et de reproduire les choix qui ont une influence sur les livrables et leur qualité."
+  }
+}

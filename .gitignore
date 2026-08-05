@@ -1,0 +1,21 @@
+# Flutter / Dart
+.dart_tool/
+.packages
+.pub/
+build/
+flutter-analyze.log
+
+# Android local files
+android/.gradle/
+android/local.properties
+android/key.properties
+android/app/upload-keystore.jks
+android/app/*.jks
+android/app/*.keystore
+
+# IDE / operating system
+.idea/
+.vscode/
+*.iml
+.DS_Store
+Thumbs.db

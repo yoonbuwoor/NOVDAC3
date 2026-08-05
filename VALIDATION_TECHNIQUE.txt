@@ -1,0 +1,18 @@
+VALIDATION EFFECTUÉE
+
+- Syntaxe Node.js de toutes les fonctions .mjs vérifiée avec node --check.
+- Script tool/configure_android.py compilé avec py_compile.
+- Banque d’examen contrôlée : 3 filières, 12 épreuves, 66 questions disponibles, 90 questions présentées sur un parcours complet des trois filières.
+- Tous les identifiants de questions et toutes les réponses correctes référencent des options existantes.
+- Structure des chemins Flutter et Netlify vérifiée.
+- Aucune clé privée Firebase ou Backblaze n’est incluse dans l’archive.
+
+NON EXÉCUTÉ DANS CET ENVIRONNEMENT
+
+- flutter pub get
+- flutter analyze
+- compilation APK/AAB
+- déploiement Netlify réel
+- appels réels Firebase, Backblaze ou EmailJS
+
+Ces validations nécessitent les identifiants du projet et l’environnement Flutter/GitHub de l’utilisateur.

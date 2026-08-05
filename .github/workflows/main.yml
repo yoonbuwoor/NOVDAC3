@@ -1,0 +1,163 @@
+name: Build DroneAtlas Nova Android
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main, master]
+    paths-ignore:
+      - 'content/**'
+      - '**/*.md'
+  pull_request:
+    branches: [main, master]
+    paths-ignore:
+      - 'content/**'
+      - '**/*.md'
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    steps:
+      - name: Télécharger le dépôt
+        uses: actions/checkout@v4
+
+      - name: Installer Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Installer Flutter stable
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Afficher les versions
+        run: |
+          flutter --version
+          dart --version
+          java -version
+
+      - name: Préparer la plateforme Android
+        run: |
+          rm -rf android
+          flutter create --platforms=android --org com.novateur221 --project-name droneatlas .
+          python3 tool/configure_android.py
+
+      - name: Installer les dépendances
+        run: flutter pub get
+
+      - name: Configurer la signature Google Play
+        shell: bash
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          set -euo pipefail
+
+          if [[ -n "$ANDROID_KEYSTORE_BASE64" && -n "$ANDROID_KEYSTORE_PASSWORD" && -n "$ANDROID_KEY_ALIAS" && -n "$ANDROID_KEY_PASSWORD" ]]; then
+            echo "::add-mask::$ANDROID_KEYSTORE_PASSWORD"
+            echo "::add-mask::$ANDROID_KEY_PASSWORD"
+            printf '%s' "$ANDROID_KEYSTORE_BASE64" | base64 --decode > android/app/upload-keystore.jks
+            cat > android/key.properties <<EOF
+          storePassword=$ANDROID_KEYSTORE_PASSWORD
+          keyPassword=$ANDROID_KEY_PASSWORD
+          keyAlias=$ANDROID_KEY_ALIAS
+          storeFile=upload-keystore.jks
+          EOF
+            echo "Signature Google Play configurée."
+          else
+            echo "::warning::Secrets de signature absents : l’APK et l’AAB seront signés avec la clé de test et ne pourront pas être envoyés sur Google Play."
+          fi
+
+      - name: Vérifier le code
+        shell: bash
+        run: |
+          set +e
+          flutter analyze --no-pub --no-fatal-infos --no-fatal-warnings 2>&1 | tee flutter-analyze.log
+          analyze_status=${PIPESTATUS[0]}
+          set -e
+
+          # Certaines versions de Flutter peuvent renvoyer le code 1 pour de simples
+          # informations de style malgré --no-fatal-infos. Seules les vraies erreurs
+          # Dart doivent bloquer la compilation Android.
+          if grep -Eq '^[[:space:]]*error[[:space:]]+•' flutter-analyze.log; then
+            echo "Des erreurs Dart bloquantes ont été détectées."
+            exit 1
+          fi
+
+          if [ "$analyze_status" -ne 0 ]; then
+            echo "::warning::flutter analyze a renvoyé $analyze_status, mais aucune erreur Dart bloquante n'a été trouvée."
+          fi
+
+          echo "Analyse terminée : aucune erreur Dart bloquante."
+
+      - name: Publier le rapport d’analyse
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: DroneAtlas-Nova-analyse
+          retention-days: 7
+          if-no-files-found: ignore
+          path: flutter-analyze.log
+
+      - name: Compiler l’APK Release
+        shell: bash
+        env:
+          DROBOT_API_URL_RAW: ${{ secrets.DROBOT_API_URL }}
+        run: |
+          set -euo pipefail
+          DROBOT_API_URL="$(printf '%s' "$DROBOT_API_URL_RAW" | tr -d '\r\n' | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
+
+          dart_defines=(
+            "--dart-define=EMAILJS_SERVICE_ID=service_726u54k"
+            "--dart-define=EMAILJS_TEMPLATE_ID=template_9y2rmzx"
+            "--dart-define=EMAILJS_PUBLIC_KEY=fxWkKI41fWVZAmts5"
+          )
+
+          if [[ -n "$DROBOT_API_URL" ]]; then
+            echo "::add-mask::$DROBOT_API_URL"
+            dart_defines+=("--dart-define=DROBOT_API_URL=$DROBOT_API_URL")
+          fi
+
+          # Les certifications sont volontairement désactivées dans cette version.
+          flutter build apk --release "${dart_defines[@]}"
+
+      - name: Compiler l’AAB Release
+        shell: bash
+        env:
+          DROBOT_API_URL_RAW: ${{ secrets.DROBOT_API_URL }}
+        run: |
+          set -euo pipefail
+          DROBOT_API_URL="$(printf '%s' "$DROBOT_API_URL_RAW" | tr -d '\r\n' | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
+
+          dart_defines=(
+            "--dart-define=EMAILJS_SERVICE_ID=service_726u54k"
+            "--dart-define=EMAILJS_TEMPLATE_ID=template_9y2rmzx"
+            "--dart-define=EMAILJS_PUBLIC_KEY=fxWkKI41fWVZAmts5"
+          )
+
+          if [[ -n "$DROBOT_API_URL" ]]; then
+            echo "::add-mask::$DROBOT_API_URL"
+            dart_defines+=("--dart-define=DROBOT_API_URL=$DROBOT_API_URL")
+          fi
+
+          # Les certifications sont volontairement désactivées dans cette version.
+          flutter build appbundle --release "${dart_defines[@]}"
+
+      - name: Publier les fichiers Android
+        uses: actions/upload-artifact@v4
+        with:
+          name: DroneAtlas-3.4.1-PlayStore
+          retention-days: 30
+          if-no-files-found: error
+          path: |
+            build/app/outputs/flutter-apk/app-release.apk
+            build/app/outputs/bundle/release/app-release.aab

@@ -1,0 +1,32 @@
+{
+  "id": "identifiant-unique",
+  "version": 1,
+  "title": "Titre du cours",
+  "summary": "Résumé court du cours.",
+  "category": "Catégorie",
+  "duration": "10 min",
+  "level": "Débutant",
+  "objectives": [
+    "Premier objectif",
+    "Deuxième objectif"
+  ],
+  "pages": [
+    {
+      "title": "1. Première partie",
+      "body": "Contenu pédagogique de la partie.",
+      "highlight": "Idée essentielle à retenir.",
+      "tip": "Conseil pratique."
+    }
+  ],
+  "quiz": {
+    "question": "Question finale ?",
+    "answers": [
+      "Réponse A",
+      "Réponse B",
+      "Réponse C",
+      "Réponse D"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Explication de la bonne réponse."
+  }
+}

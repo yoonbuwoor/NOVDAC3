@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1093943666435",
+    "project_id": "droneatlasacademy",
+    "storage_bucket": "droneatlasacademy.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1093943666435:android:3fe26fd7482705c300eb36",
+        "android_client_info": {
+          "package_name": "com.novateur221.droneatlas"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDro2uRHC8iGp4GnC-QefDhTE1O2u-ZWLk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

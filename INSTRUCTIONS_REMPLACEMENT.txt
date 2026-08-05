@@ -1,0 +1,34 @@
+DRONEATLAS ACADEMY — MISE A JOUR MOBILE
+
+Ce ZIP contient uniquement les fichiers nouveaux ou modifies.
+
+INSTALLATION
+1. Decompressez le ZIP a la racine du depot GitHub NOVDAC.
+2. Acceptez le remplacement des fichiers existants.
+3. Conservez exactement les dossiers lib/, assets/, android/ et tool/.
+4. Faites Commit changes.
+5. Relancez GitHub Actions pour generer l APK.
+
+IMPORTANT
+- Les icones sont presentes dans android/ ET tool/ car le workflow peut recreer la plateforme Android.
+- Le simulateur bloque son echelle typographique a 100 % afin d eviter les polices geantes.
+- Les alertes ANACIM sont pedagogiques et ne remplacent pas le texte officiel ni une autorisation.
+- Le lien WhatsApp ouvre maintenant le groupe DroneAtlas.
+
+FONCTIONNALITES AJOUTEES
+- 6 quiz, 54 questions.
+- Catalogue de 18 configurations DJI et recommandations selon le besoin.
+- Historique des drones avec images.
+- Page Reglementation ANACIM.
+- Alertes NO-GO / PRUDENCE dans le simulateur : altitude, nuit, BVLOS, aerodrome, espace controle, zone peuplee.
+- Drobot enrichi pour recommandations de drones, reglementation et planification de 50 ha.
+- Nouveau logo DroneAtlas Academy + Novateur221 et nouvelle palette.
+- Navigation mobile Accueil / Drobot / Simulateur / Drones / Profil.
+
+VALIDATION EFFECTUEE
+- Catalogue de contenu valide.
+- Imports relatifs verifies.
+- Ressources assets verifiees.
+- Delimiteurs et chaines Dart verifies statiquement.
+- Configuration Android regeneree avec succes.
+- La compilation Flutter finale doit etre confirmee par GitHub Actions.
