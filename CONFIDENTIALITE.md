@@ -20,3 +20,10 @@ Drone Atlas Academy enregistre localement les leçons, quiz et missions validés
 ## Communauté WhatsApp
 
 L’accès à la communauté est facultatif et ne se fait qu’après une action volontaire de l’utilisateur. L’application ne lit pas le numéro WhatsApp, ne publie aucun message automatiquement et ne transmet pas la progression au groupe.
+
+
+## Suppression du compte
+
+Un utilisateur connecté peut supprimer définitivement son compte depuis **Profil > Mon compte > Supprimer définitivement mon compte**. La suppression efface le compte Firebase, la progression synchronisée, les scores, les données de certification et les informations personnelles conservées sur l’appareil.
+
+Une ressource Web est également disponible à l’adresse `https://droneatlas.xyz/supprimer-compte` pour les personnes qui n’ont plus accès à l’application. Elle permet d’initier une demande par e-mail auprès de Novateur221.

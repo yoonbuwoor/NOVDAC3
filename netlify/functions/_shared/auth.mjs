@@ -26,3 +26,7 @@ export async function requireFirebaseUser(event) {
     emailVerified: Boolean(decoded.email_verified),
   };
 }
+
+export async function deleteFirebaseUser(uid) {
+  await getAuth(getFirebaseApp()).deleteUser(uid);
+}

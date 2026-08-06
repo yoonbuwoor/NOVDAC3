@@ -1,3 +1,13 @@
+# 3.5.1+20 — Suppression du compte
+
+- Bouton **Supprimer définitivement mon compte** dans le profil.
+- Connexion et confirmation sécurisées par mot de passe.
+- Suppression du compte Firebase et des données Backblaze B2 associées.
+- Nettoyage du profil, de la progression, des scores et des rappels locaux.
+- Page Web Play Store `/supprimer-compte` sans formulaire externe.
+- Workflow Android mis à jour pour transmettre la configuration Firebase.
+- Mode sombre de nouveau utilisé par défaut, conformément au correctif visuel demandé.
+
 # 3.5.0+19 — Mode jour, progression cloud et communauté
 
 - Mode jour par défaut avec préférence persistante.

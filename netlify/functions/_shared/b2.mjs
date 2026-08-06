@@ -1,6 +1,8 @@
 import {
+  DeleteObjectsCommand,
   GetObjectCommand,
   HeadObjectCommand,
+  ListObjectsV2Command,
   PutObjectCommand,
   S3Client,
 } from '@aws-sdk/client-s3';
@@ -152,4 +154,55 @@ export async function createDownloadUrl(key, expiresInSeconds = 604800) {
     }),
     { expiresIn: expiresInSeconds },
   );
+}
+
+
+export async function listKeys(prefix) {
+  const keys = [];
+  let continuationToken;
+
+  do {
+    const page = await b2Client().send(
+      new ListObjectsV2Command({
+        Bucket: bucket(),
+        Prefix: prefix,
+        ContinuationToken: continuationToken,
+      }),
+    );
+    for (const item of page.Contents || []) {
+      if (item.Key) keys.push(item.Key);
+    }
+    continuationToken = page.IsTruncated
+      ? page.NextContinuationToken
+      : undefined;
+  } while (continuationToken);
+
+  return keys;
+}
+
+export async function deleteKeys(rawKeys) {
+  const keys = [...new Set((rawKeys || []).filter(Boolean))];
+  let deleted = 0;
+
+  for (let index = 0; index < keys.length; index += 1000) {
+    const batch = keys.slice(index, index + 1000);
+    if (batch.length === 0) continue;
+    await b2Client().send(
+      new DeleteObjectsCommand({
+        Bucket: bucket(),
+        Delete: {
+          Quiet: true,
+          Objects: batch.map((Key) => ({ Key })),
+        },
+      }),
+    );
+    deleted += batch.length;
+  }
+
+  return deleted;
+}
+
+export async function deletePrefix(prefix) {
+  const keys = await listKeys(prefix);
+  return deleteKeys(keys);
 }

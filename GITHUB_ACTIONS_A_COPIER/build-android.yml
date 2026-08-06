@@ -113,10 +113,22 @@ jobs:
         env:
           DROBOT_API_URL_RAW: ${{ secrets.DROBOT_API_URL }}
           PROGRESS_SYNC_URL_RAW: ${{ secrets.PROGRESS_SYNC_URL }}
+          ACCOUNT_DELETE_API_URL_RAW: ${{ secrets.ACCOUNT_DELETE_API_URL }}
+          FIREBASE_API_KEY_RAW: ${{ secrets.FIREBASE_API_KEY }}
+          FIREBASE_APP_ID_RAW: ${{ secrets.FIREBASE_APP_ID }}
+          FIREBASE_MESSAGING_SENDER_ID_RAW: ${{ secrets.FIREBASE_MESSAGING_SENDER_ID }}
+          FIREBASE_PROJECT_ID_RAW: ${{ secrets.FIREBASE_PROJECT_ID }}
+          FIREBASE_AUTH_DOMAIN_RAW: ${{ secrets.FIREBASE_AUTH_DOMAIN }}
         run: |
           set -euo pipefail
           DROBOT_API_URL="$(printf '%s' "$DROBOT_API_URL_RAW" | tr -d '\r\n' | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
           PROGRESS_SYNC_URL="$(printf '%s' "$PROGRESS_SYNC_URL_RAW" | tr -d '\r\n' | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
+          ACCOUNT_DELETE_API_URL="$(printf '%s' "$ACCOUNT_DELETE_API_URL_RAW" | tr -d '\r\n' | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
+          FIREBASE_API_KEY="$(printf '%s' "$FIREBASE_API_KEY_RAW" | tr -d '\r\n' | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
+          FIREBASE_APP_ID="$(printf '%s' "$FIREBASE_APP_ID_RAW" | tr -d '\r\n' | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
+          FIREBASE_MESSAGING_SENDER_ID="$(printf '%s' "$FIREBASE_MESSAGING_SENDER_ID_RAW" | tr -d '\r\n' | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
+          FIREBASE_PROJECT_ID="$(printf '%s' "$FIREBASE_PROJECT_ID_RAW" | tr -d '\r\n' | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
+          FIREBASE_AUTH_DOMAIN="$(printf '%s' "$FIREBASE_AUTH_DOMAIN_RAW" | tr -d '\r\n' | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
 
           dart_defines=(
             "--dart-define=EMAILJS_SERVICE_ID=service_726u54k"
@@ -133,7 +145,26 @@ jobs:
             dart_defines+=("--dart-define=PROGRESS_SYNC_URL=$PROGRESS_SYNC_URL")
           fi
 
-          # Les certifications sont volontairement désactivées dans cette version.
+          if [[ -n "$ACCOUNT_DELETE_API_URL" ]]; then
+            dart_defines+=("--dart-define=ACCOUNT_DELETE_API_URL=$ACCOUNT_DELETE_API_URL")
+          fi
+
+          if [[ -n "$FIREBASE_API_KEY" && -n "$FIREBASE_APP_ID" && -n "$FIREBASE_MESSAGING_SENDER_ID" && -n "$FIREBASE_PROJECT_ID" ]]; then
+            dart_defines+=(
+              "--dart-define=FIREBASE_API_KEY=$FIREBASE_API_KEY"
+              "--dart-define=FIREBASE_APP_ID=$FIREBASE_APP_ID"
+              "--dart-define=FIREBASE_MESSAGING_SENDER_ID=$FIREBASE_MESSAGING_SENDER_ID"
+              "--dart-define=FIREBASE_PROJECT_ID=$FIREBASE_PROJECT_ID"
+            )
+            if [[ -n "$FIREBASE_AUTH_DOMAIN" ]]; then
+              dart_defines+=("--dart-define=FIREBASE_AUTH_DOMAIN=$FIREBASE_AUTH_DOMAIN")
+            fi
+            echo "Firebase configuré pour la gestion et la suppression du compte."
+          else
+            echo "::warning::Secrets Firebase incomplets : le bouton de suppression du compte restera désactivé."
+          fi
+
+          # Les examens restent désactivés, mais Firebase est actif pour la gestion du compte.
           flutter build apk --release "${dart_defines[@]}"
 
       - name: Compiler l’AAB Release
@@ -141,10 +172,22 @@ jobs:
         env:
           DROBOT_API_URL_RAW: ${{ secrets.DROBOT_API_URL }}
           PROGRESS_SYNC_URL_RAW: ${{ secrets.PROGRESS_SYNC_URL }}
+          ACCOUNT_DELETE_API_URL_RAW: ${{ secrets.ACCOUNT_DELETE_API_URL }}
+          FIREBASE_API_KEY_RAW: ${{ secrets.FIREBASE_API_KEY }}
+          FIREBASE_APP_ID_RAW: ${{ secrets.FIREBASE_APP_ID }}
+          FIREBASE_MESSAGING_SENDER_ID_RAW: ${{ secrets.FIREBASE_MESSAGING_SENDER_ID }}
+          FIREBASE_PROJECT_ID_RAW: ${{ secrets.FIREBASE_PROJECT_ID }}
+          FIREBASE_AUTH_DOMAIN_RAW: ${{ secrets.FIREBASE_AUTH_DOMAIN }}
         run: |
           set -euo pipefail
           DROBOT_API_URL="$(printf '%s' "$DROBOT_API_URL_RAW" | tr -d '\r\n' | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
           PROGRESS_SYNC_URL="$(printf '%s' "$PROGRESS_SYNC_URL_RAW" | tr -d '\r\n' | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
+          ACCOUNT_DELETE_API_URL="$(printf '%s' "$ACCOUNT_DELETE_API_URL_RAW" | tr -d '\r\n' | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
+          FIREBASE_API_KEY="$(printf '%s' "$FIREBASE_API_KEY_RAW" | tr -d '\r\n' | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
+          FIREBASE_APP_ID="$(printf '%s' "$FIREBASE_APP_ID_RAW" | tr -d '\r\n' | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
+          FIREBASE_MESSAGING_SENDER_ID="$(printf '%s' "$FIREBASE_MESSAGING_SENDER_ID_RAW" | tr -d '\r\n' | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
+          FIREBASE_PROJECT_ID="$(printf '%s' "$FIREBASE_PROJECT_ID_RAW" | tr -d '\r\n' | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
+          FIREBASE_AUTH_DOMAIN="$(printf '%s' "$FIREBASE_AUTH_DOMAIN_RAW" | tr -d '\r\n' | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
 
           dart_defines=(
             "--dart-define=EMAILJS_SERVICE_ID=service_726u54k"
@@ -161,13 +204,32 @@ jobs:
             dart_defines+=("--dart-define=PROGRESS_SYNC_URL=$PROGRESS_SYNC_URL")
           fi
 
-          # Les certifications sont volontairement désactivées dans cette version.
+          if [[ -n "$ACCOUNT_DELETE_API_URL" ]]; then
+            dart_defines+=("--dart-define=ACCOUNT_DELETE_API_URL=$ACCOUNT_DELETE_API_URL")
+          fi
+
+          if [[ -n "$FIREBASE_API_KEY" && -n "$FIREBASE_APP_ID" && -n "$FIREBASE_MESSAGING_SENDER_ID" && -n "$FIREBASE_PROJECT_ID" ]]; then
+            dart_defines+=(
+              "--dart-define=FIREBASE_API_KEY=$FIREBASE_API_KEY"
+              "--dart-define=FIREBASE_APP_ID=$FIREBASE_APP_ID"
+              "--dart-define=FIREBASE_MESSAGING_SENDER_ID=$FIREBASE_MESSAGING_SENDER_ID"
+              "--dart-define=FIREBASE_PROJECT_ID=$FIREBASE_PROJECT_ID"
+            )
+            if [[ -n "$FIREBASE_AUTH_DOMAIN" ]]; then
+              dart_defines+=("--dart-define=FIREBASE_AUTH_DOMAIN=$FIREBASE_AUTH_DOMAIN")
+            fi
+            echo "Firebase configuré pour la gestion et la suppression du compte."
+          else
+            echo "::warning::Secrets Firebase incomplets : le bouton de suppression du compte restera désactivé."
+          fi
+
+          # Les examens restent désactivés, mais Firebase est actif pour la gestion du compte.
           flutter build appbundle --release "${dart_defines[@]}"
 
       - name: Publier les fichiers Android
         uses: actions/upload-artifact@v4
         with:
-          name: Drone-Atlas-Academy-3.5.0-PlayStore
+          name: Drone-Atlas-Academy-3.5.1-PlayStore
           retention-days: 30
           if-no-files-found: error
           path: |

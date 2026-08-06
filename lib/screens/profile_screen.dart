@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -5,6 +6,7 @@ import '../config/community_config.dart';
 import '../controllers/app_controller.dart';
 import '../core/theme.dart';
 import '../data/academy_data.dart';
+import '../services/certification_auth_service.dart';
 import '../widgets/common.dart';
 import 'glossary_screen.dart';
 import 'quiz_screen.dart';
@@ -204,6 +206,26 @@ class ProfileScreen extends StatelessWidget {
                   );
                 },
               ),
+            ),
+          ),
+        ),
+        SliverToBoxAdapter(
+          child: MaxWidthBox(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(20, 28, 20, 12),
+              child: const SectionHeading(
+                eyebrow: 'CONFIDENTIALITÉ',
+                title: 'Mon compte',
+                subtitle: 'Suppression définitive du compte et des données associées.',
+              ),
+            ),
+          ),
+        ),
+        SliverToBoxAdapter(
+          child: MaxWidthBox(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: _AccountDeletionCard(controller: controller),
             ),
           ),
         ),
@@ -523,6 +545,398 @@ class _ToolCard extends StatelessWidget {
 }
 
 
+
+
+class _AccountDeletionCard extends StatefulWidget {
+  const _AccountDeletionCard({required this.controller});
+
+  final AppController controller;
+
+  @override
+  State<_AccountDeletionCard> createState() => _AccountDeletionCardState();
+}
+
+class _AccountDeletionCardState extends State<_AccountDeletionCard> {
+  late Future<User?> _userFuture;
+  String? _recentPassword;
+
+  @override
+  void initState() {
+    super.initState();
+    _userFuture = _loadCurrentUser();
+  }
+
+  Future<User?> _loadCurrentUser() async {
+    if (!CertificationAuthService.isConfigured) return null;
+    await CertificationAuthService.initializeIfConfigured();
+    return CertificationAuthService.currentUser;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<User?>(
+      future: _userFuture,
+      builder: (context, snapshot) {
+        final loading = snapshot.connectionState == ConnectionState.waiting;
+        final user = snapshot.data;
+        final configured = CertificationAuthService.isConfigured;
+        final enabled = configured && !loading;
+
+        return Card(
+          child: Padding(
+            padding: const EdgeInsets.all(18),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      width: 48,
+                      height: 48,
+                      decoration: BoxDecoration(
+                        color: danger.withOpacity(.10),
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: const Icon(
+                        Icons.delete_forever_rounded,
+                        color: danger,
+                      ),
+                    ),
+                    const SizedBox(width: 13),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            'Supprimer mon compte',
+                            style: TextStyle(
+                              fontSize: 17,
+                              fontWeight: FontWeight.w900,
+                            ),
+                          ),
+                          const SizedBox(height: 5),
+                          Text(
+                            user != null
+                                ? 'Compte connecté : ${user.email ?? 'adresse inconnue'}'
+                                : loading
+                                    ? 'Vérification du compte connecté…'
+                                    : configured
+                                        ? 'Une connexion sécurisée sera demandée avant la suppression.'
+                                        : 'La connexion Firebase doit être configurée dans le build Play Store.',
+                            style: TextStyle(
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onSurfaceVariant,
+                              height: 1.4,
+                              fontSize: 12.5,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 14),
+                const Text(
+                  'La suppression efface le compte Firebase, la progression synchronisée, les scores, les données de certification et le profil conservé sur ce téléphone. Cette action est irréversible.',
+                  style: TextStyle(fontSize: 12.5, height: 1.45),
+                ),
+                const SizedBox(height: 16),
+                SizedBox(
+                  width: double.infinity,
+                  child: FilledButton.icon(
+                    onPressed: enabled
+                        ? () async {
+                            final accountUser = user ??
+                                await _signInForDeletion(context);
+                            if (accountUser != null && context.mounted) {
+                              await _confirmDeletion(context, accountUser);
+                            }
+                          }
+                        : null,
+                    style: FilledButton.styleFrom(
+                      backgroundColor: danger,
+                      foregroundColor: Colors.white,
+                      minimumSize: const Size.fromHeight(50),
+                    ),
+                    icon: const Icon(Icons.delete_forever_rounded),
+                    label: const Text('Supprimer définitivement mon compte'),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+
+  Future<User?> _signInForDeletion(BuildContext pageContext) async {
+    final formKey = GlobalKey<FormState>();
+    final emailController = TextEditingController(
+      text: widget.controller.learnerEmail,
+    );
+    final passwordController = TextEditingController();
+    var signingIn = false;
+    String? errorMessage;
+
+    final user = await showDialog<User?>(
+      context: pageContext,
+      barrierDismissible: false,
+      builder: (dialogContext) => StatefulBuilder(
+        builder: (context, setDialogState) => AlertDialog(
+          title: const Text('Connexion requise'),
+          content: SizedBox(
+            width: 430,
+            child: Form(
+              key: formKey,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Text(
+                    'Connecte-toi au compte que tu souhaites supprimer.',
+                    style: TextStyle(height: 1.4),
+                  ),
+                  const SizedBox(height: 16),
+                  TextFormField(
+                    controller: emailController,
+                    enabled: !signingIn,
+                    keyboardType: TextInputType.emailAddress,
+                    autofillHints: const [AutofillHints.email],
+                    decoration: const InputDecoration(
+                      labelText: 'Adresse e-mail',
+                      prefixIcon: Icon(Icons.mail_outline_rounded),
+                    ),
+                    validator: (value) {
+                      final email = (value ?? '').trim();
+                      return RegExp(r'^[^\s@]+@[^\s@]+\.[^\s@]+$')
+                              .hasMatch(email)
+                          ? null
+                          : 'Adresse e-mail invalide.';
+                    },
+                  ),
+                  const SizedBox(height: 12),
+                  TextFormField(
+                    controller: passwordController,
+                    enabled: !signingIn,
+                    obscureText: true,
+                    autofillHints: const [AutofillHints.password],
+                    decoration: const InputDecoration(
+                      labelText: 'Mot de passe',
+                      prefixIcon: Icon(Icons.lock_outline_rounded),
+                    ),
+                    validator: (value) => (value ?? '').isEmpty
+                        ? 'Saisis ton mot de passe.'
+                        : null,
+                  ),
+                  if (errorMessage != null) ...[
+                    const SizedBox(height: 12),
+                    Text(
+                      errorMessage!,
+                      style: const TextStyle(
+                        color: danger,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: signingIn
+                  ? null
+                  : () => Navigator.pop(dialogContext),
+              child: const Text('Annuler'),
+            ),
+            FilledButton.icon(
+              onPressed: signingIn
+                  ? null
+                  : () async {
+                      if (!formKey.currentState!.validate()) return;
+                      setDialogState(() {
+                        signingIn = true;
+                        errorMessage = null;
+                      });
+                      try {
+                        final credential = await CertificationAuthService.signIn(
+                          email: emailController.text,
+                          password: passwordController.text,
+                        );
+                        _recentPassword = passwordController.text;
+                        if (!dialogContext.mounted) return;
+                        Navigator.pop(dialogContext, credential.user);
+                      } on FirebaseAuthException catch (error) {
+                        setDialogState(() {
+                          signingIn = false;
+                          errorMessage = switch (error.code) {
+                            'invalid-credential' ||
+                            'wrong-password' ||
+                            'user-not-found' =>
+                              'E-mail ou mot de passe incorrect.',
+                            'too-many-requests' =>
+                              'Trop de tentatives. Réessaie plus tard.',
+                            'network-request-failed' =>
+                              'Connexion Internet indisponible.',
+                            _ => error.message ?? 'Connexion impossible.',
+                          };
+                        });
+                      } catch (error) {
+                        setDialogState(() {
+                          signingIn = false;
+                          errorMessage = 'Connexion impossible : $error';
+                        });
+                      }
+                    },
+              icon: signingIn
+                  ? const SizedBox(
+                      width: 16,
+                      height: 16,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  : const Icon(Icons.login_rounded),
+              label: Text(signingIn ? 'Connexion…' : 'Continuer'),
+            ),
+          ],
+        ),
+      ),
+    );
+
+    emailController.dispose();
+    passwordController.dispose();
+    if (user != null && mounted) {
+      setState(() {
+        _userFuture = Future<User?>.value(user);
+      });
+    }
+    return user;
+  }
+
+  Future<void> _confirmDeletion(BuildContext pageContext, User user) async {
+    final passwordController = TextEditingController(text: _recentPassword);
+    final formKey = GlobalKey<FormState>();
+    var deleting = false;
+    String? errorMessage;
+
+    final deleted = await showDialog<bool>(
+      context: pageContext,
+      barrierDismissible: false,
+      builder: (dialogContext) => StatefulBuilder(
+        builder: (context, setDialogState) => AlertDialog(
+          icon: const Icon(
+            Icons.warning_amber_rounded,
+            color: danger,
+            size: 42,
+          ),
+          title: const Text('Supprimer définitivement le compte ?'),
+          content: SizedBox(
+            width: 440,
+            child: Form(
+              key: formKey,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Le compte ${user.email ?? ''} et toutes les données associées seront supprimés. Cette action ne pourra pas être annulée.',
+                    style: const TextStyle(height: 1.45),
+                  ),
+                  const SizedBox(height: 16),
+                  TextFormField(
+                    controller: passwordController,
+                    enabled: !deleting,
+                    obscureText: true,
+                    autofillHints: const [AutofillHints.password],
+                    decoration: const InputDecoration(
+                      labelText: 'Mot de passe du compte',
+                      prefixIcon: Icon(Icons.lock_outline_rounded),
+                      helperText: 'Demandé pour sécuriser la suppression.',
+                    ),
+                    validator: (value) => (value ?? '').isEmpty
+                        ? 'Saisis ton mot de passe.'
+                        : null,
+                  ),
+                  if (errorMessage != null) ...[
+                    const SizedBox(height: 12),
+                    Text(
+                      errorMessage!,
+                      style: const TextStyle(
+                        color: danger,
+                        fontWeight: FontWeight.w700,
+                        height: 1.35,
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: deleting
+                  ? null
+                  : () => Navigator.pop(dialogContext, false),
+              child: const Text('Annuler'),
+            ),
+            FilledButton.icon(
+              onPressed: deleting
+                  ? null
+                  : () async {
+                      if (!formKey.currentState!.validate()) return;
+                      setDialogState(() {
+                        deleting = true;
+                        errorMessage = null;
+                      });
+                      final success = await widget.controller
+                          .deleteCurrentAccount(
+                            password: passwordController.text,
+                          );
+                      if (!dialogContext.mounted) return;
+                      if (success) {
+                        Navigator.pop(dialogContext, true);
+                      } else {
+                        setDialogState(() {
+                          deleting = false;
+                          errorMessage = widget.controller.accountDeletionError ??
+                              'La suppression a échoué.';
+                        });
+                      }
+                    },
+              style: FilledButton.styleFrom(
+                backgroundColor: danger,
+                foregroundColor: Colors.white,
+              ),
+              icon: deleting
+                  ? const SizedBox(
+                      width: 16,
+                      height: 16,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: Colors.white,
+                      ),
+                    )
+                  : const Icon(Icons.delete_forever_rounded),
+              label: Text(deleting ? 'Suppression…' : 'Oui, supprimer'),
+            ),
+          ],
+        ),
+      ),
+    );
+
+    passwordController.dispose();
+    _recentPassword = null;
+    if (deleted == true && pageContext.mounted) {
+      ScaffoldMessenger.of(pageContext).showSnackBar(
+        const SnackBar(
+          content: Text('Compte et données supprimés définitivement.'),
+        ),
+      );
+    }
+  }
+}
 
 class _ContactCard extends StatelessWidget {
   const _ContactCard({

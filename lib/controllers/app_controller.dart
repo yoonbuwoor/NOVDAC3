@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/remote_content_models.dart';
+import '../services/account_deletion_service.dart';
 import '../services/background_update_service.dart';
 import '../services/content_update_service.dart';
 import '../services/notification_service.dart';
@@ -48,6 +49,7 @@ class AppController extends ChangeNotifier {
   final ContentUpdateService _contentService = ContentUpdateService();
   final RegistrationService _registrationService = RegistrationService();
   final ProgressSyncService _progressSyncService = ProgressSyncService();
+  final AccountDeletionService _accountDeletionService = AccountDeletionService();
   final SharedPreferencesAsync _prefs = SharedPreferencesAsync();
   StreamSubscription<List<ConnectivityResult>>? _connectivitySubscription;
   bool _networkAvailable = false;
@@ -89,6 +91,8 @@ class AppController extends ChangeNotifier {
   DateTime? lastProgressSyncedAt;
   String? progressSyncError;
   bool communityInvitationHandled = false;
+  bool accountDeletionInProgress = false;
+  String? accountDeletionError;
 
   Set<String> get completedLessons => Set.unmodifiable(_completedLessons);
   Set<String> get completedMissions => Set.unmodifiable(_completedMissions);
@@ -598,7 +602,7 @@ class AppController extends ChangeNotifier {
       final response = await _progressSyncService.sync(<String, dynamic>{
         'schemaVersion': 1,
         'appName': 'Drone Atlas Academy',
-        'appVersion': '3.5.0',
+        'appVersion': '3.5.1',
         'profile': <String, String>{
           'name': learnerName.trim(),
           'profession': learnerProfession.trim(),
@@ -676,6 +680,79 @@ class AppController extends ChangeNotifier {
     } finally {
       _progressSyncInFlight = false;
     }
+  }
+
+
+  Future<bool> deleteCurrentAccount({required String password}) async {
+    if (accountDeletionInProgress) return false;
+
+    accountDeletionInProgress = true;
+    accountDeletionError = null;
+    notifyListeners();
+
+    try {
+      await _accountDeletionService.deleteCurrentAccount(password: password);
+      await _clearLocalPersonalData();
+      accountDeletionInProgress = false;
+      accountDeletionError = null;
+      notifyListeners();
+      return true;
+    } on AccountDeletionException catch (error) {
+      accountDeletionInProgress = false;
+      accountDeletionError = error.message;
+      notifyListeners();
+      return false;
+    } catch (error) {
+      accountDeletionInProgress = false;
+      accountDeletionError = 'Impossible de supprimer le compte : $error';
+      notifyListeners();
+      return false;
+    }
+  }
+
+  Future<void> _clearLocalPersonalData() async {
+    await BackgroundUpdateService.refreshSchedule(enabled: false);
+
+    await Future.wait<void>([
+      _prefs.remove(_learnerNameKey),
+      _prefs.remove(_learnerProfessionKey),
+      _prefs.remove(_learnerEmailKey),
+      _prefs.remove(_onboardingCompleteKey),
+      _prefs.remove(_registrationSyncedKey),
+      _prefs.remove(_completedLessonsKey),
+      _prefs.remove(_completedMissionsKey),
+      _prefs.remove(_missionScoresKey),
+      _prefs.remove(_quizScoresKey),
+      _prefs.remove(_xpKey),
+      _prefs.remove(_progressPendingKey),
+      _prefs.remove(_lastProgressSyncKey),
+      _prefs.remove(_communityInvitationHandledKey),
+      _prefs.remove(_notificationsEnabledKey),
+      _prefs.remove(_reminderFrequencyKey),
+    ]);
+
+    _completedLessons.clear();
+    _completedMissions.clear();
+    _missionScores.clear();
+    _quizScores.clear();
+
+    learnerName = 'Explorateur';
+    learnerProfession = '';
+    learnerEmail = '';
+    xp = 120;
+    streak = 1;
+    selectedDomain = 'Cartographie & SIG';
+    onboardingComplete = false;
+    registrationSynced = false;
+    registrationSubmitting = false;
+    registrationError = null;
+    notificationsEnabled = false;
+    reminderFrequency = 'daily';
+    progressSyncState = ProgressSyncState.idle;
+    progressSyncPending = false;
+    lastProgressSyncedAt = null;
+    progressSyncError = null;
+    communityInvitationHandled = false;
   }
 
   Future<void> markCommunityInvitationHandled() async {
@@ -821,6 +898,7 @@ class AppController extends ChangeNotifier {
     _contentService.dispose();
     _registrationService.dispose();
     _progressSyncService.dispose();
+    _accountDeletionService.dispose();
     super.dispose();
   }
 }

@@ -1,7 +1,7 @@
 name: droneatlas
 publish_to: 'none'
 description: Drone Atlas Academy — académie mobile pour maîtriser drone, photogrammétrie, géomatique, météo opérationnelle, capteurs et IA géospatiale.
-version: 3.5.0+19
+version: 3.5.1+20
 
 environment:
   sdk: '>=3.10.0 <4.0.0'
