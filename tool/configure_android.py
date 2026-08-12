@@ -131,7 +131,7 @@ if settings.exists():
     text = settings.read_text(encoding="utf-8")
     text = re.sub(
         r'id\("com\.android\.application"\) version "[^"]+"',
-        'id("com.android.application") version "8.12.1"',
+        'id("com.android.application") version "8.13.2"',
         text,
     )
     text = re.sub(
@@ -146,7 +146,7 @@ if wrapper.exists():
     text = wrapper.read_text(encoding="utf-8")
     text = re.sub(
         r'distributionUrl=.*gradle-[^-]+-(?:all|bin)\.zip',
-        'distributionUrl=https\\://services.gradle.org/distributions/gradle-8.13-all.zip',
+        'distributionUrl=https\\://services.gradle.org/distributions/gradle-8.14.3-all.zip',
         text,
     )
     wrapper.write_text(text, encoding="utf-8")
