@@ -9,48 +9,63 @@ APP = ANDROID / "app"
 manifest = APP / "src" / "main" / "AndroidManifest.xml"
 if manifest.exists():
     text = manifest.read_text(encoding="utf-8")
-    # Autorise les règles du Manifest Merger.
-    text = text.replace(
-        '<manifest xmlns:android="http://schemas.android.com/apk/res/android">',
-        '<manifest xmlns:android="http://schemas.android.com/apk/res/android"\\n'
-        '    xmlns:tools="http://schemas.android.com/tools">',
+
+    # Le Manifest Merger a besoin du namespace "tools" pour supprimer une
+    # permission éventuellement ajoutée par une dépendance.
+    manifest_tag = '<manifest xmlns:android="http://schemas.android.com/apk/res/android">'
+    manifest_tag_tools = (
+        '<manifest xmlns:android="http://schemas.android.com/apk/res/android"\n'
+        '    xmlns:tools="http://schemas.android.com/tools">'
     )
+    if 'xmlns:tools=' not in text:
+        text = text.replace(manifest_tag, manifest_tag_tools, 1)
+
+    # Nom public de l'application.
     text = text.replace('android:label="droneatlas"', 'android:label="Drone Atlas Academy"')
     text = text.replace('android:label="Droneatlas"', 'android:label="Drone Atlas Academy"')
     text = text.replace('android:label="DroneAtlas"', 'android:label="Drone Atlas Academy"')
-    text = text.replace('android:label="Drone Atlas Academy"', 'android:label="Drone Atlas Academy"')
+
+    # Permissions réellement nécessaires à l'application.
     permissions = [
         'android.permission.INTERNET',
         'android.permission.POST_NOTIFICATIONS',
         'android.permission.ACCESS_COARSE_LOCATION',
         'android.permission.ACCESS_FINE_LOCATION',
     ]
+
+    # Insérer les permissions juste après la balise <manifest ...>.
+    manifest_close = manifest_tag_tools if 'xmlns:tools=' in text else manifest_tag
+    insertion_lines = []
     for permission in permissions:
         marker = f'<uses-permission android:name="{permission}" />'
         if marker not in text:
-            text = text.replace(
-                '<manifest xmlns:android="http://schemas.android.com/apk/res/android">',
-                '<manifest xmlns:android="http://schemas.android.com/apk/res/android">\n'
-                f'    {marker}',
-            )
-    # Certaines dépendances Android peuvent ajouter ces permissions lors de la
-    # fusion des manifests. Drone Atlas Academy n'utilise pas de service de
-    # premier plan de type dataSync : on les retire explicitement du manifeste final.
-    remove_permissions = [
-        'android.permission.FOREGROUND_SERVICE_DATA_SYNC',
-        'android.permission.FOREGROUND_SERVICE',
-    ]
-    for permission in remove_permissions:
-        marker = (
-            f'    <uses-permission\\n'
-            f'        android:name="{permission}"\\n'
-            f'        tools:node="remove" />'
+            insertion_lines.append(f'    {marker}')
+
+    if insertion_lines:
+        text = text.replace(
+            manifest_close,
+            manifest_close + '\n' + '\n'.join(insertion_lines),
+            1,
         )
-        if f'android:name="{permission}"' not in text:
-            insert_after = (
-                '    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />'
-            )
-            text = text.replace(insert_after, insert_after + '\\n' + marker, 1)
+
+    # Google Play détectait FOREGROUND_SERVICE_DATA_SYNC via une dépendance.
+    # Drone Atlas Academy n'utilise pas de service foreground de type dataSync.
+    # Cette règle demande au Manifest Merger de retirer uniquement cette
+    # permission du manifeste final.
+    data_sync_permission = 'android.permission.FOREGROUND_SERVICE_DATA_SYNC'
+    remove_rule = (
+        '    <uses-permission\n'
+        f'        android:name="{data_sync_permission}"\n'
+        '        tools:node="remove" />'
+    )
+
+    if f'android:name="{data_sync_permission}"' not in text:
+        # Ajouter la règle après les permissions principales.
+        anchor = '    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />'
+        if anchor in text:
+            text = text.replace(anchor, anchor + '\n' + remove_rule, 1)
+        else:
+            text = text.replace(manifest_close, manifest_close + '\n' + remove_rule, 1)
 
     manifest.write_text(text, encoding="utf-8")
 
@@ -156,7 +171,7 @@ if settings.exists():
     text = settings.read_text(encoding="utf-8")
     text = re.sub(
         r'id\("com\.android\.application"\) version "[^"]+"',
-        'id("com.android.application") version "8.12.1"',
+        'id("com.android.application") version "8.13.2"',
         text,
     )
     text = re.sub(
@@ -171,9 +186,30 @@ if wrapper.exists():
     text = wrapper.read_text(encoding="utf-8")
     text = re.sub(
         r'distributionUrl=.*gradle-[^-]+-(?:all|bin)\.zip',
-        'distributionUrl=https\\://services.gradle.org/distributions/gradle-8.13-all.zip',
+        'distributionUrl=https\\://services.gradle.org/distributions/gradle-8.14.3-bin.zip',
         text,
     )
+    if re.search(r'^networkTimeout=.*$', text, flags=re.MULTILINE):
+        text = re.sub(
+            r'^networkTimeout=.*$',
+            'networkTimeout=60000',
+            text,
+            flags=re.MULTILINE,
+        )
+    else:
+        text += '\nnetworkTimeout=60000\n'
+
+    gradle_sha = 'bd71102213493060956ec229d946beee57158dbd89d0e62b91bca0fa2c5f3531'
+    if re.search(r'^distributionSha256Sum=.*$', text, flags=re.MULTILINE):
+        text = re.sub(
+            r'^distributionSha256Sum=.*$',
+            f'distributionSha256Sum={gradle_sha}',
+            text,
+            flags=re.MULTILINE,
+        )
+    else:
+        text += f'distributionSha256Sum={gradle_sha}\n'
+
     wrapper.write_text(text, encoding="utf-8")
 
 
