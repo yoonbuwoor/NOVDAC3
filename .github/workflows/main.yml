@@ -31,9 +31,10 @@ jobs:
           distribution: temurin
           java-version: '17'
 
-      - name: Installer Flutter stable
+      - name: Installer Flutter 3.44.9
         uses: subosito/flutter-action@v2
         with:
+          flutter-version: '3.44.9'
           channel: stable
           cache: true
 
