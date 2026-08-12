@@ -30,7 +30,7 @@ android {
 
     defaultConfig {
         multiDexEnabled = true
-        applicationId = "com.droneatlasacademy.myapp"
+        applicationId = "com.novateur221.droneatlas"
         minSdk = 24
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
