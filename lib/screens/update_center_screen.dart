@@ -377,41 +377,78 @@ class _NotificationCard extends StatelessWidget {
               },
             ),
             const Divider(height: 1),
-            ListTile(
-              enabled: controller.notificationsEnabled,
-              leading: const GradientIcon(
-                icon: Icons.schedule_rounded,
-                color: violet,
-              ),
-              title: const Text(
-                'Fréquence des rappels',
-                style: TextStyle(fontWeight: FontWeight.w900),
-              ),
-              subtitle: const Text(
-                'Android choisit l’heure la plus adaptée.',
-              ),
-              trailing: DropdownButton<String>(
-                value: controller.reminderFrequency,
-                underline: const SizedBox.shrink(),
-                items: const [
-                  DropdownMenuItem(value: 'off', child: Text('Désactivés')),
-                  DropdownMenuItem(value: 'daily', child: Text('Toutes les 12 heures')),
-                  DropdownMenuItem(
-                    value: 'three_per_week',
-                    child: Text('3 fois/semaine'),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 16, 16, 14),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const GradientIcon(
+                    icon: Icons.schedule_rounded,
+                    color: violet,
                   ),
-                  DropdownMenuItem(
-                    value: 'weekly',
-                    child: Text('Chaque semaine'),
+                  const SizedBox(width: 14),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Fréquence des rappels',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(fontWeight: FontWeight.w900),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          'Android choisit l’heure la plus adaptée.',
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.onSurfaceVariant,
+                            height: 1.35,
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        SizedBox(
+                          width: double.infinity,
+                          child: DropdownButtonFormField<String>(
+                            value: controller.reminderFrequency,
+                            isExpanded: true,
+                            decoration: const InputDecoration(
+                              labelText: 'Rappels',
+                              contentPadding: EdgeInsets.symmetric(
+                                horizontal: 14,
+                                vertical: 12,
+                              ),
+                            ),
+                            items: const [
+                              DropdownMenuItem(
+                                value: 'off',
+                                child: Text('Désactivés'),
+                              ),
+                              DropdownMenuItem(
+                                value: 'daily',
+                                child: Text('Toutes les 12 heures'),
+                              ),
+                              DropdownMenuItem(
+                                value: 'three_per_week',
+                                child: Text('3 fois par semaine'),
+                              ),
+                              DropdownMenuItem(
+                                value: 'weekly',
+                                child: Text('Chaque semaine'),
+                              ),
+                            ],
+                            onChanged: controller.notificationsEnabled
+                                ? (value) {
+                                    if (value != null) {
+                                      controller.setReminderFrequency(value);
+                                    }
+                                  }
+                                : null,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ],
-                onChanged: controller.notificationsEnabled
-                    ? (value) {
-                        if (value != null) {
-                          controller.setReminderFrequency(value);
-                        }
-                      }
-                    : null,
               ),
             ),
           ],

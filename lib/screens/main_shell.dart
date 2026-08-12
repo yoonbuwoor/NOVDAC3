@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../controllers/app_controller.dart';
 import '../core/theme.dart';
@@ -26,8 +27,63 @@ class MainShell extends StatefulWidget {
 
 class _MainShellState extends State<MainShell> {
   int _index = 0;
+  final List<int> _tabHistory = <int>[0];
+  bool _exitDialogOpen = false;
 
-  void _goTo(int index) => setState(() => _index = index);
+  void _goTo(int index) {
+    if (index == _index) return;
+    setState(() {
+      _index = index;
+      _tabHistory.add(index);
+    });
+  }
+
+  Future<void> _handleBack(BuildContext context) async {
+    if (_tabHistory.length > 1) {
+      setState(() {
+        _tabHistory.removeLast();
+        _index = _tabHistory.last;
+      });
+      return;
+    }
+
+    if (_index != 0) {
+      setState(() {
+        _index = 0;
+        _tabHistory
+          ..clear()
+          ..add(0);
+      });
+      return;
+    }
+
+    if (_exitDialogOpen) return;
+    _exitDialogOpen = true;
+    final shouldExit = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: const Text('Quitter Drone Atlas Academy ?'),
+        content: const Text(
+          'Es-tu sûr de vouloir quitter l’application ?',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext, false),
+            child: const Text('Non'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(dialogContext, true),
+            child: const Text('Oui, quitter'),
+          ),
+        ],
+      ),
+    );
+    _exitDialogOpen = false;
+
+    if (shouldExit == true) {
+      await SystemNavigator.pop();
+    }
+  }
 
   void _openAcademy(BuildContext context) {
     Navigator.push(
@@ -95,31 +151,39 @@ class _MainShellState extends State<MainShell> {
     return LayoutBuilder(
       builder: (context, constraints) {
         final wide = constraints.maxWidth >= 1040;
-        return Scaffold(
-          extendBody: true,
-          body: SafeArea(
-            bottom: wide,
-            child: Row(
-              children: [
-                if (wide)
-                  _Sidebar(
+        return PopScope(
+          canPop: false,
+          onPopInvokedWithResult: (didPop, result) {
+            if (!didPop) {
+              _handleBack(context);
+            }
+          },
+          child: Scaffold(
+            extendBody: true,
+            body: SafeArea(
+              bottom: wide,
+              child: Row(
+                children: [
+                  if (wide)
+                    _Sidebar(
+                      selectedIndex: _index,
+                      destinations: destinations,
+                      learnerName: controller.learnerName,
+                      xp: controller.xp,
+                      onSelected: _goTo,
+                    ),
+                  Expanded(child: IndexedStack(index: _index, children: pages)),
+                ],
+              ),
+            ),
+            bottomNavigationBar: wide
+                ? null
+                : _BottomBar(
                     selectedIndex: _index,
                     destinations: destinations,
-                    learnerName: controller.learnerName,
-                    xp: controller.xp,
                     onSelected: _goTo,
                   ),
-                Expanded(child: IndexedStack(index: _index, children: pages)),
-              ],
-            ),
           ),
-          bottomNavigationBar: wide
-              ? null
-              : _BottomBar(
-                  selectedIndex: _index,
-                  destinations: destinations,
-                  onSelected: _goTo,
-                ),
         );
       },
     );
