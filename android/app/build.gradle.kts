@@ -14,7 +14,7 @@ if (keystorePropertiesFile.exists()) {
 }
 
 android {
-    namespace = "com.droneatlasacademy.myapp"
+    namespace = "com.novateur221.droneatlas"
     compileSdk = 36
     ndkVersion = flutter.ndkVersion
 
