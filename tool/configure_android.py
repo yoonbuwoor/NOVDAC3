@@ -146,9 +146,30 @@ if wrapper.exists():
     text = wrapper.read_text(encoding="utf-8")
     text = re.sub(
         r'distributionUrl=.*gradle-[^-]+-(?:all|bin)\.zip',
-        'distributionUrl=https\\://services.gradle.org/distributions/gradle-8.14.3-all.zip',
+        'distributionUrl=https\\://services.gradle.org/distributions/gradle-8.14.3-bin.zip',
         text,
     )
+    if re.search(r'^networkTimeout=.*$', text, flags=re.MULTILINE):
+        text = re.sub(
+            r'^networkTimeout=.*$',
+            'networkTimeout=60000',
+            text,
+            flags=re.MULTILINE,
+        )
+    else:
+        text += '\nnetworkTimeout=60000\n'
+
+    gradle_sha = 'bd71102213493060956ec229d946beee57158dbd89d0e62b91bca0fa2c5f3531'
+    if re.search(r'^distributionSha256Sum=.*$', text, flags=re.MULTILINE):
+        text = re.sub(
+            r'^distributionSha256Sum=.*$',
+            f'distributionSha256Sum={gradle_sha}',
+            text,
+            flags=re.MULTILINE,
+        )
+    else:
+        text += f'distributionSha256Sum={gradle_sha}\n'
+
     wrapper.write_text(text, encoding="utf-8")
 
 
