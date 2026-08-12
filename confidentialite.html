@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="index, follow" />
+  <meta name="description" content="Politique de confidentialité de Drone Atlas Academy, application développée par Novateur221." />
+  <meta name="theme-color" content="#0b1020" />
+
+  <title>Confidentialité — Drone Atlas Academy</title>
+
+  <style>
+    :root {
+      --bg: #070b14;
+      --panel: rgba(17, 24, 39, 0.92);
+      --panel-soft: rgba(255, 255, 255, 0.04);
+      --text: #f8fafc;
+      --muted: #cbd5e1;
+      --border: rgba(255, 255, 255, 0.10);
+      --accent-1: #ff7a59;
+      --accent-2: #ef476f;
+      --accent-3: #b5175b;
+      --success: #22c55e;
+      --shadow: 0 24px 70px rgba(0, 0, 0, 0.34);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at top right, rgba(239, 71, 111, 0.18), transparent 34%),
+        radial-gradient(circle at top left, rgba(255, 122, 89, 0.10), transparent 30%),
+        var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+    }
+
+    a {
+      color: inherit;
+    }
+
+    .page {
+      width: min(1080px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 44px 0 64px;
+    }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      padding: 42px;
+      border: 1px solid var(--border);
+      border-radius: 28px;
+      background:
+        linear-gradient(135deg, rgba(255, 122, 89, 0.10), rgba(181, 23, 91, 0.08)),
+        var(--panel);
+      box-shadow: var(--shadow);
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      width: 220px;
+      height: 220px;
+      right: -90px;
+      top: -90px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent-1), var(--accent-3));
+      opacity: 0.16;
+      filter: blur(2px);
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 16px;
+      padding: 8px 13px;
+      border: 1px solid rgba(255, 122, 89, 0.30);
+      border-radius: 999px;
+      background: rgba(255, 122, 89, 0.08);
+      color: #ffd2c6;
+      font-size: 0.86rem;
+      font-weight: 700;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      position: relative;
+      z-index: 1;
+      margin: 0;
+      max-width: 760px;
+      font-size: clamp(2.15rem, 5vw, 4rem);
+      line-height: 1.04;
+      letter-spacing: -0.04em;
+    }
+
+    .subtitle {
+      position: relative;
+      z-index: 1;
+      margin: 18px 0 0;
+      max-width: 780px;
+      color: var(--muted);
+      font-size: 1.05rem;
+    }
+
+    .meta {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 24px;
+    }
+
+    .chip {
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: var(--panel-soft);
+      border: 1px solid var(--border);
+      color: #e2e8f0;
+      font-size: .9rem;
+    }
+
+    .content {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 260px;
+      gap: 28px;
+      margin-top: 28px;
+    }
+
+    .card {
+      padding: 30px;
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      background: var(--panel);
+      box-shadow: 0 14px 38px rgba(0, 0, 0, 0.18);
+    }
+
+    .section + .section {
+      margin-top: 30px;
+      padding-top: 30px;
+      border-top: 1px solid var(--border);
+    }
+
+    h2 {
+      margin: 0 0 12px;
+      font-size: 1.35rem;
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+    }
+
+    p {
+      margin: 0 0 14px;
+      color: var(--muted);
+    }
+
+    ul {
+      margin: 8px 0 0;
+      padding-left: 22px;
+      color: var(--muted);
+    }
+
+    li + li {
+      margin-top: 7px;
+    }
+
+    strong {
+      color: var(--text);
+    }
+
+    .notice {
+      margin-top: 18px;
+      padding: 16px 18px;
+      border-radius: 16px;
+      border: 1px solid rgba(34, 197, 94, 0.22);
+      background: rgba(34, 197, 94, 0.07);
+      color: #dcfce7;
+    }
+
+    .side {
+      align-self: start;
+      position: sticky;
+      top: 18px;
+    }
+
+    .side h3 {
+      margin: 0 0 14px;
+      font-size: 1rem;
+    }
+
+    .toc {
+      display: grid;
+      gap: 8px;
+    }
+
+    .toc a {
+      text-decoration: none;
+      color: var(--muted);
+      padding: 9px 10px;
+      border-radius: 12px;
+      transition: .2s ease;
+    }
+
+    .toc a:hover {
+      color: var(--text);
+      background: var(--panel-soft);
+    }
+
+    .action {
+      margin-top: 18px;
+      display: inline-flex;
+      width: 100%;
+      justify-content: center;
+      align-items: center;
+      gap: 9px;
+      padding: 13px 16px;
+      border-radius: 14px;
+      text-decoration: none;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--accent-1), var(--accent-2) 55%, var(--accent-3));
+      color: white;
+      box-shadow: 0 10px 30px rgba(239, 71, 111, 0.20);
+    }
+
+    .small {
+      margin-top: 12px;
+      color: #94a3b8;
+      font-size: .86rem;
+    }
+
+    footer {
+      margin-top: 28px;
+      padding: 20px 8px 0;
+      color: #94a3b8;
+      font-size: .9rem;
+      text-align: center;
+    }
+
+    .brand {
+      font-weight: 800;
+      color: white;
+    }
+
+    @media (max-width: 820px) {
+      .page {
+        width: min(100% - 20px, 1080px);
+        padding-top: 18px;
+      }
+
+      .hero {
+        padding: 28px 22px;
+        border-radius: 22px;
+      }
+
+      .content {
+        grid-template-columns: 1fr;
+      }
+
+      .side {
+        position: static;
+        order: -1;
+      }
+
+      .card {
+        padding: 22px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+
+      * {
+        transition: none !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="page">
+    <header class="hero">
+      <div class="eyebrow">Drone Atlas Academy • Novateur221</div>
+      <h1>Politique de confidentialité</h1>
+      <p class="subtitle">
+        Cette page explique quelles informations sont utilisées par Drone Atlas Academy,
+        pourquoi elles sont utilisées et comment l'utilisateur peut gérer ou supprimer ses données.
+      </p>
+
+      <div class="meta">
+        <span class="chip">Application mobile</span>
+        <span class="chip">Formation drone</span>
+        <span class="chip">Photogrammétrie</span>
+        <span class="chip">Géomatique</span>
+      </div>
+    </header>
+
+    <div class="content">
+      <article class="card">
+        <section class="section" id="donnees">
+          <h2>1. Informations demandées au premier lancement</h2>
+
+          <p>
+            Au premier lancement, <strong>Drone Atlas Academy</strong> demande le nom,
+            la profession ou le domaine d’activité et l’adresse e-mail de l’utilisateur.
+          </p>
+
+          <p>Ces informations servent à :</p>
+
+          <ul>
+            <li>personnaliser le profil affiché dans l’application ;</li>
+            <li>connaître les profils professionnels intéressés par la formation ;</li>
+            <li>recevoir une fiche d’inscription par e-mail.</li>
+          </ul>
+
+          <p>
+            Elles sont enregistrées localement sur l’appareil et transmises par connexion HTTPS
+            aux services configurés par <strong>Novateur221</strong>.
+          </p>
+
+          <div class="notice">
+            Drone Atlas Academy ne crée aucun réseau social interne et ne demande aucun numéro de téléphone.
+          </div>
+
+          <p style="margin-top:16px;">
+            L’utilisateur peut modifier ses informations depuis l’onglet <strong>Profil</strong>.
+          </p>
+        </section>
+
+        <section class="section" id="progression">
+          <h2>2. Progression pédagogique</h2>
+
+          <p>
+            Drone Atlas Academy enregistre localement les leçons, quiz et missions validés,
+            les meilleurs scores et les points d’expérience.
+          </p>
+
+          <p>
+            Lorsque l’appareil retrouve une connexion Internet, ces informations sont synchronisées
+            automatiquement avec le service de sauvegarde de Novateur221 afin de restaurer et de fusionner
+            la progression.
+          </p>
+
+          <p>
+            Aucun numéro de téléphone n’est demandé ni affiché par l’application.
+          </p>
+        </section>
+
+        <section class="section" id="whatsapp">
+          <h2>3. Communauté WhatsApp</h2>
+
+          <p>
+            L’accès à la communauté WhatsApp est facultatif et ne se fait qu’après une action volontaire
+            de l’utilisateur.
+          </p>
+
+          <p>
+            L’application ne lit pas le numéro WhatsApp, ne publie aucun message automatiquement
+            et ne transmet pas la progression pédagogique au groupe.
+          </p>
+        </section>
+
+        <section class="section" id="suppression">
+          <h2>4. Suppression du compte</h2>
+
+          <p>
+            Un utilisateur connecté peut supprimer définitivement son compte directement depuis
+            <strong>Profil &gt; Mon compte &gt; Supprimer définitivement mon compte</strong>.
+          </p>
+
+          <h2 style="margin-top:24px;">Suppression des données</h2>
+          <p>
+            Les utilisateurs peuvent demander la suppression de leur compte d’application
+            et des données personnelles associées.
+          </p>
+
+          <p><strong>Données pouvant être supprimées par les utilisateurs :</strong></p>
+
+          <ul>
+            <li>le compte Firebase associé à Drone Atlas Academy ;</li>
+            <li>le nom, l’adresse e-mail et la profession ou le domaine d’activité ;</li>
+            <li>la progression pédagogique synchronisée ;</li>
+            <li>les leçons, quiz et missions validés ;</li>
+            <li>les meilleurs scores et les points d’expérience ;</li>
+            <li>les données de certification associées, lorsqu’elles existent ;</li>
+            <li>les informations personnelles conservées localement sur l’appareil.</li>
+          </ul>
+
+          <div class="notice" style="margin-top:20px;">
+            <strong>Vous n’avez plus accès à l’application ?</strong><br>
+            Vous pouvez demander la suppression de votre compte et de vos données par e-mail à
+            Novateur221.
+          </div>
+
+          <p style="margin-top:18px;">
+            <a class="action"
+               style="width:auto; display:inline-flex;"
+               href="mailto:novateur221@gmail.com?subject=Suppression%20de%20mon%20compte%20Drone%20Atlas%20Academy&amp;body=Bonjour%20Novateur221%2C%0A%0AJe%20demande%20la%20suppression%20de%20mon%20compte%20Drone%20Atlas%20Academy%20et%20des%20donn%C3%A9es%20associ%C3%A9es.%0A%0AAdresse%20e-mail%20du%20compte%20%3A%20%0A%0ACordialement.">
+              Supprimer le compte d'appli
+            </a>
+          </p>
+
+          <p>
+            Adresse de contact :
+            <a href="mailto:novateur221@gmail.com">novateur221@gmail.com</a>
+          </p>
+        </section>
+
+        <section class="section" id="contact">
+          <h2>5. Responsable du service</h2>
+
+          <p>
+            Drone Atlas Academy est développée et exploitée par <strong>Novateur221</strong>.
+          </p>
+
+          <p>
+            Pour toute question liée à la confidentialité ou à la suppression des données,
+            l’utilisateur peut utiliser les moyens de contact officiels proposés par Novateur221.
+          </p>
+        </section>
+      </article>
+
+      <aside class="card side">
+        <h3>Sommaire</h3>
+
+        <nav class="toc" aria-label="Sommaire de la politique de confidentialité">
+          <a href="#donnees">Informations collectées</a>
+          <a href="#progression">Progression pédagogique</a>
+          <a href="#whatsapp">Communauté WhatsApp</a>
+          <a href="#suppression">Suppression du compte</a>
+          <a href="#contact">Responsable du service</a>
+        </nav>
+
+        <a class="action"
+           href="mailto:novateur221@gmail.com?subject=Suppression%20de%20mon%20compte%20Drone%20Atlas%20Academy&amp;body=Bonjour%20Novateur221%2C%0A%0AJe%20demande%20la%20suppression%20de%20mon%20compte%20Drone%20Atlas%20Academy%20et%20des%20donn%C3%A9es%20associ%C3%A9es.%0A%0AAdresse%20e-mail%20du%20compte%20%3A%20%0A%0ACordialement.">
+          Supprimer le compte d'appli
+        </a>
+
+        <p class="small">
+          Le bouton ouvre votre application e-mail avec une demande de suppression préremplie à Novateur221.
+        </p>
+      </aside>
+    </div>
+
+    <footer>
+      <span class="brand">Drone Atlas Academy</span> — Powered by Novateur221
+    </footer>
+  </main>
+</body>
+</html>
