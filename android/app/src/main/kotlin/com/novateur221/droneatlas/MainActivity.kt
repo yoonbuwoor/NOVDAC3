@@ -1,4 +1,4 @@
-package com.novateur221.droneatlas
+package com.droneatlasacademy.myapp
 
 import android.view.WindowManager
 import io.flutter.embedding.android.FlutterActivity
